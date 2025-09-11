@@ -58,4 +58,4 @@ The `HAL` supports a predefined set of mutually exclusive persistent states (e.g
 | Sequential Transition Validation | Perform ordered transitions between valid states (e.g., `ACTIVE → STANDBY → OFF`) and confirm HAL consistency. | `set()`, `get()` |
 | Vendor Extension State Testing | For platforms supporting vendor states (≥ 1000), test setting and getting those states if they are declared in HFP. | `set()`, `get()`, `getCapabilities()` |
 | Stress and Loop Testing | Repeatedly set and get all supported states in a loop. Check for memory issues, crashes, or incorrect state. | `set()`, `get()` |
-| Fault and Error Visual Verification | Set fault states (e.g., `WPS_ERROR`, `SOFTWARE_DOWNLOAD_ERROR`) and check if visual indicator behavior aligns with spec. | `set()`, `get()` |
+| Set fault states | Set fault states (e.g., `WPS_ERROR`, `SOFTWARE_DOWNLOAD_ERROR`) and check if visual indicator behavior aligns with spec. | `set()`, `get()` |
