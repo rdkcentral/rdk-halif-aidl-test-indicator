@@ -26,8 +26,8 @@
 
 This document provides an overview of the testing requirements for the Indicator `HAL` module. It outlines the scope of testing, objectives, testing levels and approaches, and specific test requirements.
 
-- Indicator Interface Definitions - [Indicator HAL](https://github.com/rdkcentral/rdk-halif-aidl/tree/current/indicator/current/com/rdk/hal/indicator)  
-- Indicator `HAL` Feature Profile - [hfp-indicator.yaml](https://github.com/rdkcentral/rdk-halif-aidl/tree/current/indicator/current/hfp-indicator.yaml)
+- Indicator Interface Definitions - [Indicator HAL](https://github.com/rdkcentral/rdk-halif-aidl/tree/main/indicator/current/com/rdk/hal/indicator)
+- Indicator `HAL` Feature Profile - [hfp-indicator.yaml](https://github.com/rdkcentral/rdk-halif-aidl/blob/main/indicator/current/hfp-indicator.yaml)
 
 
 ## Module Description
