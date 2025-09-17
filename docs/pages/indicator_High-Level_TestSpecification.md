@@ -52,11 +52,10 @@ The `HAL` supports a predefined set of mutually exclusive persistent states (e.g
 
 | Test | Description | Validation Method |
 |------|-------------|-------------------|
-| General Lifecycle Validation | Transition device through `BOOT` → `ACTIVE` → `STANDBY` → `OFF` → `DEEP_SLEEP`. Verify physical indicators (LED color/pattern/panel display) match expected behavior per platform specification. | Observe hardware indicators. |
-| WPS Workflow Validation | Trigger `WPS_CONNECTING` → `WPS_CONNECTED`. Induce error to validate WPS_ERROR and WPS_SES_OVERLAP. Confirm LEDs/panel reflect Wi-Fi onboarding patterns. | External Wi-Fi AP and LED observation. |
-| Network Connectivity Indication | Simulate `WIFI_ERROR`, `IP_ACQUIRED`, and `NO_IP`. Verify hardware indicator reflects connectivity condition. | Network setup tool and hardware observation. |
-| System Operation & Maintenance | Trigger `FULL_SYSTEM_RESET`, `USB_UPGRADE`, `SOFTWARE_DOWNLOAD_ERROR`. Validate indicator reflects upgrade/reset states. | USB injection and LED monitoring. |
-| State Exclusivity Check | Set transitions across categories (e.g., ACTIVE → WPS_CONNECTING → PSU_FAILURE). Verify only one physical state is visible at any time. | Visual and monitoring tools. |
-| Vendor Extension Validation | If platform defines states ≥ USER_DEFINED_BASE (e.g., `VOICE_MODE_ACTIVE`), verify indicator follows documented vendor-specific behavior. | Observe hardware behavior vs vendor specification. |
-| Enforcement of Read-Only States | Attempt to set reserved states like `BOOT` and `ERROR_UNKNOWN`. HAL must reject these. | Simulate the process |
+| General States Validation | Set each supported state (`BOOT`, `ACTIVE`, `STANDBY`, `OFF`, `DEEP_SLEEP`) one by one and verify that the corresponding indicator behavior matches the platform specification. | Observe hardware indicators (LED color, blink pattern, panel display). |
+| WPS Workflow Validation | Set `WPS_CONNECTING` → `WPS_CONNECTED`. Confirm LEDs/panel reflect Wi-Fi onboarding patterns. | External Wi-Fi AP and LED observation. |
+| Network Connectivity Indication | Set `WIFI_ERROR`, `IP_ACQUIRED`, and `NO_IP`. Verify hardware indicator reflects connectivity condition. | Network setup tool and hardware observation. |
+| System Operation & Maintenance | Set `FULL_SYSTEM_RESET`, `USB_UPGRADE`, `SOFTWARE_DOWNLOAD_ERROR`. Validate indicator reflects upgrade/reset states. | USB injection and LED monitoring. |
+| Vendor Extension Validation | If platform defines states ≥ USER_DEFINED_BASE (e.g., `VOICE_MODE_ACTIVE`), verify indicator follows documented vendor-specific behavior. | Observe hardware behavior |
+| Enforcement of Read-Only States | Set reserved states like `BOOT` and `ERROR_UNKNOWN`. HAL must reject these. | Observe hardware behavior |
 | Stress & Endurance | Cycle through all supported states listed in `indicator.yaml` for extended duration. Verify no stuck indicators, drift, or crash. | Automated state toggle and continuous monitoring. |
