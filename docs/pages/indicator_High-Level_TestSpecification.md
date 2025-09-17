@@ -50,12 +50,13 @@ The `HAL` supports a predefined set of mutually exclusive persistent states (e.g
 
 ## L3 Test Specification
 
-| Test | Description | HAL APIs |
-|------|-------------|----------|
-| Full-State Lifecycle Validation | Set each supported state and verify the state transition via `get()`. Confirm hardware behavior (e.g., LED change) if applicable. | `set()`, `get()` |
-| State Exclusivity Check | Ensure only one state is active at a time. Set a new state and verify previous one is overwritten. | `set()`, `get()` |
-| Enforcement of Read-Only States | Attempt to set reserved states like `BOOT` and `ERROR_UNKNOWN`. HAL must reject these. | `set()`, `get()` |
-| Sequential Transition Validation | Perform ordered transitions between valid states (e.g., `ACTIVE → STANDBY → OFF`) and confirm HAL consistency. | `set()`, `get()` |
-| Vendor Extension State Testing | For platforms supporting vendor states (≥ 1000), test setting and getting those states if they are declared in HFP. | `set()`, `get()`, `getCapabilities()` |
-| Stress and Loop Testing | Repeatedly set and get all supported states in a loop. Check for memory issues, crashes, or incorrect state. | `set()`, `get()` |
-| Set fault states | Set fault states (e.g., `WPS_ERROR`, `SOFTWARE_DOWNLOAD_ERROR`) and check if visual indicator behavior aligns with spec. | `set()`, `get()` |
+| Test | Description | Validation Method |
+|------|-------------|-------------------|
+| General Lifecycle Validation | Transition device through `BOOT` → `ACTIVE` → `STANDBY` → `OFF` → `DEEP_SLEEP`. Verify physical indicators (LED color/pattern/panel display) match expected behavior per platform specification. | Observe hardware indicators. |
+| WPS Workflow Validation | Trigger `WPS_CONNECTING` → `WPS_CONNECTED`. Induce error to validate WPS_ERROR and WPS_SES_OVERLAP. Confirm LEDs/panel reflect Wi-Fi onboarding patterns. | External Wi-Fi AP and LED observation. |
+| Network Connectivity Indication | Simulate `WIFI_ERROR`, `IP_ACQUIRED`, and `NO_IP`. Verify hardware indicator reflects connectivity condition. | Network setup tool and hardware observation. |
+| System Operation & Maintenance | Trigger `FULL_SYSTEM_RESET`, `USB_UPGRADE`, `SOFTWARE_DOWNLOAD_ERROR`. Validate indicator reflects upgrade/reset states. | USB injection and LED monitoring. |
+| State Exclusivity Check | Set transitions across categories (e.g., ACTIVE → WPS_CONNECTING → PSU_FAILURE). Verify only one physical state is visible at any time. | Visual and monitoring tools. |
+| Vendor Extension Validation | If platform defines states ≥ USER_DEFINED_BASE (e.g., `VOICE_MODE_ACTIVE`), verify indicator follows documented vendor-specific behavior. | Observe hardware behavior vs vendor specification. |
+| Enforcement of Read-Only States | Attempt to set reserved states like `BOOT` and `ERROR_UNKNOWN`. HAL must reject these. | Simulate the process |
+| Stress & Endurance | Cycle through all supported states listed in `indicator.yaml` for extended duration. Verify no stuck indicators, drift, or crash. | Automated state toggle and continuous monitoring. |
