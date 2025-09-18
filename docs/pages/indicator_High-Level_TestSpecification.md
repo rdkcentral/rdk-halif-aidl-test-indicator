@@ -58,4 +58,4 @@ The `HAL` supports a predefined set of mutually exclusive persistent states (e.g
 | System Operation & Maintenance | Set `FULL_SYSTEM_RESET`, `USB_UPGRADE`, `SOFTWARE_DOWNLOAD_ERROR`. Validate indicator reflects upgrade/reset states. | USB injection and LED monitoring. |
 | Vendor Extension Validation | If platform defines states ≥ USER_DEFINED_BASE (e.g., `VOICE_MODE_ACTIVE`), verify indicator follows documented vendor-specific behavior. | Observe hardware behavior |
 | Enforcement of Read-Only States | Set reserved states like `BOOT` and `ERROR_UNKNOWN`. HAL must reject these. | Observe hardware behavior |
-| Stress & Endurance | Cycle through all supported states listed in `indicator.yaml` for extended duration. Verify no stuck indicators, drift, or crash. | Automated state toggle and continuous monitoring. |
+| Stress & Endurance | Cycle through all supported states listed in `indicator.yaml` for extended duration. Verify no stuck indicators, drift, or crash. | continuous monitoring on state toggle. |
