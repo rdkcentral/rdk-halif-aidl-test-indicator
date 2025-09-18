@@ -52,10 +52,10 @@ The `HAL` supports a predefined set of mutually exclusive persistent states (e.g
 
 | Test | Description | Validation Method |
 |------|-------------|-------------------|
-| General States Validation | Set each supported state (`BOOT`, `ACTIVE`, `STANDBY`, `OFF`, `DEEP_SLEEP`) one by one and verify that the corresponding indicator behavior matches the platform specification. | Observe hardware indicators (LED color, blink pattern, panel display). |
-| WPS Workflow Validation | Set `WPS_CONNECTING` → `WPS_CONNECTED`. Confirm LEDs/panel reflect Wi-Fi onboarding patterns. | External Wi-Fi AP and LED observation. |
-| Network Connectivity Indication | Set `WIFI_ERROR`, `IP_ACQUIRED`, and `NO_IP`. Verify hardware indicator reflects connectivity condition. | Network setup tool and hardware observation. |
-| System Operation & Maintenance | Set `FULL_SYSTEM_RESET`, `USB_UPGRADE`, `SOFTWARE_DOWNLOAD_ERROR`. Validate indicator reflects upgrade/reset states. | USB injection and LED monitoring. |
-| Vendor Extension Validation | If platform defines states ≥ USER_DEFINED_BASE (e.g., `VOICE_MODE_ACTIVE`), verify indicator follows documented vendor-specific behavior. | Observe hardware behavior |
-| Enforcement of Read-Only States | Set reserved states like `BOOT` and `ERROR_UNKNOWN`. HAL must reject these. | Observe hardware behavior |
-| Stress & Endurance | Cycle through all supported states listed in `indicator.yaml` for extended duration. Verify no stuck indicators, drift, or crash. | continuous monitoring on state toggle. |
+| General States Validation | Set each supported state (`ACTIVE`, `STANDBY`, `OFF`, `DEEP_SLEEP`) and verify that the corresponding indicator behavior matches the platform specification. | Observe hardware indicators (LED color, blink pattern, panel display). |
+| WPS Workflow Validation | Set `WPS_CONNECTING` → `WPS_CONNECTED`and verify corresponding LED patterns. | Validate LED patterns. |
+| Network Connectivity Indication | Set `WIFI_ERROR`, `IP_ACQUIRED`, and `NO_IP`and verify LED patterns reflect connectivity condition. | Validate LED patterns. |
+| System Operation & Maintenance | Set `FULL_SYSTEM_RESET`, `USB_UPGRADE`, `SOFTWARE_DOWNLOAD_ERROR`and verify LED patterns. | Validate LED patterns. |
+| Vendor Extension Validation | If platform defines states ≥ USER_DEFINED_BASE (e.g., `VOICE_MODE_ACTIVE`), verify indicator follows documented vendor-specific behavior. | Validate LED patterns. |
+| Enforcement of Read-Only States | Use automation to reboot the device and validate LED pattern for `BOOT`. For `ERROR_UNKNOWN`, simulate or trigger an error condition and validate LED behavior. | Validate LED patterns. |
+| Stress & Endurance | Cycle through all supported states listed in `indicator.yaml` for extended duration. Verify no stuck indicators, drift, or crash. | Continuous monitoring on state toggle. |
