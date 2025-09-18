@@ -54,7 +54,7 @@ The `HAL` supports a predefined set of mutually exclusive persistent states (e.g
 |------|-------------|-------------------|
 | General States Validation | Set each supported state (`ACTIVE`, `STANDBY`, `OFF`, `DEEP_SLEEP`) and verify that the corresponding indicator behavior matches the platform specification. | Observe hardware indicators (LED color, blink pattern, panel display). |
 | WPS States Validation | Set `WPS_CONNECTING`, `WPS_CONNECTED`, `WPS_ERROR`, `WPS_SES_OVERLAP` and verify corresponding LED patterns. | Validate LED patterns. |
-| Network Connectivity Indication | Set `WIFI_ERROR`, `IP_ACQUIRED`, and `NO_IP`and verify LED patterns reflect connectivity condition. | Validate LED patterns. |
+| Network Connectivity Indication | Set `WIFI_ERROR`, `IP_ACQUIRED`, and `NO_IP`and verify LED patterns. | Validate LED patterns. |
 | System Operation & Maintenance | Set `FULL_SYSTEM_RESET`, `USB_UPGRADE`, `SOFTWARE_DOWNLOAD_ERROR`and verify LED patterns. | Validate LED patterns. |
 | Vendor Extension Validation | If platform defines states ≥ USER_DEFINED_BASE (e.g., `VOICE_MODE_ACTIVE`), verify indicator follows documented vendor-specific behavior. | Validate LED patterns. |
 | Enforcement of Read-Only States | Use automation to reboot the device and validate LED pattern for `BOOT`. For `ERROR_UNKNOWN`, simulate or trigger an error condition and validate LED behavior. | Validate LED patterns. |
