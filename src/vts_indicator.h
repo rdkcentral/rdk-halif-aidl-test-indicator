@@ -64,6 +64,8 @@
 
  #include <ut.h>
  #include <ut_kvp_profile.h>
+ #include <string>
+ #include <sstream>
  #include <com/rdk/hal/indicator/BpIndicator.h>
  #include <com/rdk/hal/indicator/Capabilities.h>
  #include <utils/String16.h>
@@ -86,6 +88,30 @@
          UT_ASSERT_EQUAL(status.exceptionCode(), ::android::binder::Status::EX_NONE); \
          UT_LOG_DEBUG("Capabilities supportedStates size: %zu", caps.supportedStates.size()); \
      } while (0)
+
+// Macro for set - positive case
+#define INDICATOR_SET(indicatorHandle, state, result) \
+    do { \
+        ::android::binder::Status status; \
+        UT_LOG_DEBUG("Calling set(IN:state[%d], OUT:result[])", state); \
+        status = (indicatorHandle)->set(state, &result); \
+        UT_LOG_DEBUG("Result set(OUT:%d), status:[isOK:%d, exception:%d]", result, status.isOk(), status.exceptionCode()); \
+        UT_ASSERT_TRUE(status.isOk()); \
+        UT_ASSERT_EQUAL(status.exceptionCode(), ::android::binder::Status::EX_NONE); \
+        UT_ASSERT_EQUAL(result, true); \
+    } while (0)
+
+// Macro for get- positive case
+#define INDICATOR_GET(indicatorHandle, state) \
+    do { \
+        ::android::binder::Status status; \
+        UT_LOG_DEBUG("Calling get(OUT:state[])"); \
+        status = (indicatorHandle)->get(&state); \
+        UT_LOG_DEBUG("Result get(OUT:%s), status:[isOK:%d, exception:%d]", com::rdk::hal::indicator::toString(state).c_str(), status.isOk(), status.exceptionCode()); \
+        UT_ASSERT_TRUE(status.isOk()); \
+        UT_ASSERT_EQUAL(status.exceptionCode(), ::android::binder::Status::EX_NONE); \
+    } while (0)
+
  
  /**
   * @} // End of INDICATOR_HALTEST_CLASS

@@ -93,6 +93,10 @@
      INDICATOR_GET_CAPABILITIES(gINDICATORHandle, caps);
      UT_ASSERT_EQUAL(caps.supportedStates.size(), 
                      UT_KVP_PROFILE_GET_LIST_COUNT("IIndicator.supportedStates"));
+     com::rdk::hal::indicator::State state;
+     bool result = false;
+     INDICATOR_SET(gINDICATORHandle, com::rdk::hal::indicator::State::ACTIVE, result);
+     INDICATOR_GET(gINDICATORHandle, state);
      return;
  }
  
