@@ -37,7 +37,7 @@ The following functions validate correct operation of the Indicator HAL APIs.
 | -- | -- |
 | Function Name | `test_l2_Indicator_GetCapabilities` |
 | Description | Call `getCapabilities()` and verify that the returned supported states match exactly with the ones listed in profile specification entries. |
-| Test Group | Module : 01 |
+| Test Group | Module : 02 |
 | Test Case ID | 001 |
 | Priority | High |
 
@@ -64,7 +64,7 @@ If user chose to run the test in interactive mode, then the test case has to be 
 | -- | -- |
 | Function Name | `test_l2_Indicator_GeneralStates` |
 | Description | Call `set()` for each general state (`ACTIVE`, `STANDBY`, `OFF`, `DEEP_SLEEP`) and verify correctness using `get()`. |
-| Test Group | Module : 01 |
+| Test Group | Module : 02 |
 | Test Case ID | 002 |
 | Priority | High |
 
@@ -96,7 +96,7 @@ If user chose to run the test in interactive mode, then the test case has to be 
 | -- | -- |
 | Function Name | `test_l2_Indicator_WPSStates` |
 | Description | Call `set()` for each WPS state (`WPS_CONNECTING`, `WPS_CONNECTED`, `WPS_ERROR`, `WPS_SES_OVERLAP`) and verify correctness using `get()`. |
-| Test Group | Module : 01 |
+| Test Group | Module : 02 |
 | Test Case ID | 003 |
 | Priority | High |
 
@@ -129,7 +129,7 @@ If user chose to run the test in interactive mode, then the test case has to be 
 | -- | -- |
 | Function Name | `test_l2_Indicator_NetworkStates` |
 | Description | Call `set()` for network-related states (`WIFI_ERROR`, `IP_ACQUIRED`, `NO_IP`) and verify correctness using `get()`. |
-| Test Group | Module : 01 |
+| Test Group | Module : 02 |
 | Test Case ID | 004 |
 | Priority | Medium |
 
@@ -159,7 +159,7 @@ If user chose to run the test in interactive mode, then the test case has to be 
 | -- | -- |
 | Function Name | `test_l2_Indicator_MaintenanceStates` |
 | Description | Call `set()` for system maintenance states (`FULL_SYSTEM_RESET`, `USB_UPGRADE`, `SOFTWARE_DOWNLOAD_ERROR`, `PSU_FAILURE`) and verify correctness using `get()`. |
-| Test Group | Module : 01 |
+| Test Group | Module : 02 |
 | Test Case ID | 005 |
 | Priority | Medium |
 
