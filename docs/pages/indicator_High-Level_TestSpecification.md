@@ -41,11 +41,11 @@ The `HAL` supports a predefined set of mutually exclusive persistent states (e.g
 
 | Test | Description | HAL APIs |
 |------|-------------|----------|
-| Get Supported Capabilities | Call `getCapabilities()` and verify returned states match the ones listed in `hfp-indicator.yaml`. | `getCapabilities()` |
-| Set and Get – General States | Set and get each general state (e.g., `ACTIVE`, `STANDBY`, `OFF`, `DEEP_SLEEP`). Verify the response of `get()` matches the set state. | `set()`, `get()` |
-| Set and Get – WPS States | Verify states like `WPS_CONNECTING`, `WPS_CONNECTED`, `WPS_ERROR`, `WPS_SES_OVERLAP`. Ensure proper setting and reading. | `set()`, `get()` |
-| Set and Get – Network States | Test network-related states: `WIFI_ERROR`, `IP_ACQUIRED`, `NO_IP`. Validate correctness. | `set()`, `get()` |
-| Set and Get – System Maintenance States | Validate system operational states like `FULL_SYSTEM_RESET`, `USB_UPGRADE`, `SOFTWARE_DOWNLOAD_ERROR`, `PSU_FAILURE`. | `set()`, `get()` |
+| Get Supported Capabilities | Call `getCapabilities()` and verify returned states match the ones listed in configuration file. | `getCapabilities()` |
+| Set and Get – General States | Set and get each general state (`ACTIVE`, `STANDBY`, `OFF`, `DEEP_SLEEP`). Verify the response of `get()` matches the set state. | `set()`, `get()` |
+| Set and Get – WPS States |Set and get each WPS-related states `WPS_CONNECTING`, `WPS_CONNECTED`, `WPS_ERROR`, `WPS_SES_OVERLAP`. Verify the response of `get()` matches the set state. | `set()`, `get()` |
+| Set and Get – Network States | Set and get each  network-related states: `WIFI_ERROR`, `IP_ACQUIRED`, `NO_IP`. Verify the response of `get()` matches the set state. | `set()`, `get()` |
+| Set and Get – System Maintenance States | Set and get each system operational states `FULL_SYSTEM_RESET`, `USB_UPGRADE`, `SOFTWARE_DOWNLOAD_ERROR`, `PSU_FAILURE`. Verify the response of `get()` matches the set state.| `set()`, `get()` |
 
 
 ## L3 Test Specification
@@ -58,4 +58,4 @@ The `HAL` supports a predefined set of mutually exclusive persistent states (e.g
 | System Operation & Maintenance | Set `FULL_SYSTEM_RESET`, `USB_UPGRADE`, `SOFTWARE_DOWNLOAD_ERROR`and verify LED patterns. | Validate LED patterns. |
 | Vendor Extension Validation | If platform defines states ≥ USER_DEFINED_BASE (e.g., `VOICE_MODE_ACTIVE`), verify indicator follows documented vendor-specific behavior. | Validate LED patterns. |
 | Enforcement of Read-Only States | Use automation to reboot the device and validate LED pattern for `BOOT`. For `ERROR_UNKNOWN`, simulate or trigger an error condition and validate LED behavior. | Validate LED patterns. |
-| Stress & Endurance | Cycle through all supported states listed in `indicator.yaml` for extended duration. Verify no stuck indicators, drift, or crash. | Continuous monitoring on state toggle. |
+| Stress & Endurance | Cycle through all supported states for extended duration. Verify no stuck indicators, drift, or crash. | Continuous monitoring on state toggle. |
