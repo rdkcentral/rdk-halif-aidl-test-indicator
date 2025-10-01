@@ -34,7 +34,7 @@ This document provides an overview of the testing requirements for the Indicator
 
 The Indicator `HAL` defines an abstraction layer for controlling device visual indicators (e.g., LEDs, panels) to signal system states to end users. It exposes an interface to query supported capabilities and to set or get the current indicator state.  
 
-The `HAL` supports a predefined set of mutually exclusive persistent states (e.g., `BOOT`, `ACTIVE`, `WPS_CONNECTING`, `PSU_FAILURE`) that reflect system conditions. These states are represented as an enum (`State`) and must be supported according to the platform's `HAL` Feature Profile (HFP).
+The `HAL` supports a predefined set of states (e.g., `BOOT`, `ACTIVE`, `WPS_CONNECTING`, `PSU_FAILURE`) that reflect system conditions. 
 
 
 ## L2 Test Specification
