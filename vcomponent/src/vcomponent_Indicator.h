@@ -45,13 +45,13 @@
                      virtual ~Indicator();
  
                      //::android::IBinder *onAsBinder() override;
- 
+                     State mCurrentState = State::ERROR_UNKNOWN;
+
                      ::android::binder::Status getCapabilities(Capabilities *_aidl_return) override;
                      ::android::binder::Status set(State state, bool* _aidl_return) override;
                      ::android::binder::Status get(State* _aidl_return) override;
  
                  private:
-                     //State mCurrentState = State::BOOT; // default
                      void binderDied(const ::android::wp<::android::IBinder> &who) override;
                  };
  

@@ -77,7 +77,7 @@
  using com::rdk::hal::indicator::IIndicator;
  using com::rdk::hal::indicator::Capabilities;
  
- // Macro for getCapabilities - positive case
+ // Macro for getCapabilities
  #define INDICATOR_GET_CAPABILITIES(indicatorHandle, caps) \
      do { \
          ::android::binder::Status status; \
@@ -89,7 +89,7 @@
          UT_LOG_DEBUG("Capabilities supportedStates size: %zu", caps.supportedStates.size()); \
      } while (0)
 
-// Macro for set - positive case
+// Macro for set 
 #define INDICATOR_SET(indicatorHandle, state, result) \
     do { \
         ::android::binder::Status status; \
@@ -98,10 +98,9 @@
         UT_LOG_DEBUG("Result set(OUT:%d), status:[isOK:%d, exception:%d]", result, status.isOk(), status.exceptionCode()); \
         UT_ASSERT_TRUE(status.isOk()); \
         UT_ASSERT_EQUAL(status.exceptionCode(), ::android::binder::Status::EX_NONE); \
-        UT_ASSERT_EQUAL(result, true); \
     } while (0)
 
-// Macro for get- positive case
+// Macro for get
 #define INDICATOR_GET(indicatorHandle, state) \
     do { \
         ::android::binder::Status status; \

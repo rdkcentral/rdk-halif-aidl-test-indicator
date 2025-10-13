@@ -86,19 +86,55 @@
         }
  };
  
- // Test case for getCapabilities, getHALVersion, getProperty, and setProperty positive scenarios
- UT_ADD_TEST(VTS_L1_INDICATOR, getAndSet_pos)
+ // Test case for getCapabilities, set, and get positive scenarios
+ UT_ADD_TEST(VTS_L1_INDICATOR, l1_getCaps_pos)
  {
-     com::rdk::hal::indicator::Capabilities caps;
-     INDICATOR_GET_CAPABILITIES(gINDICATORHandle, caps);
-     UT_ASSERT_EQUAL(caps.supportedStates.size(), 
-                     UT_KVP_PROFILE_GET_LIST_COUNT("IIndicator.supportedStates"));
-     com::rdk::hal::indicator::State state;
-     bool result = false;
-     INDICATOR_SET(gINDICATORHandle, com::rdk::hal::indicator::State::ACTIVE, result);
-     INDICATOR_GET(gINDICATORHandle, state);
-     return;
- }
+    com::rdk::hal::indicator::Capabilities caps;
+    INDICATOR_GET_CAPABILITIES(gINDICATORHandle, caps);
+    UT_ASSERT_EQUAL(caps.supportedStates.size(), 
+                    UT_KVP_PROFILE_GET_LIST_COUNT("IIndicator.supportedStates"));
+    return;
+}
+
+UT_ADD_TEST(VTS_L1_INDICATOR, l1_set_pos)
+{
+    bool result = false;
+    
+    com::rdk::hal::indicator::Capabilities caps;
+    INDICATOR_GET_CAPABILITIES(gINDICATORHandle, caps);
+
+    for(size_t i = 1; i < caps.supportedStates.size(); i++) 
+    {
+        INDICATOR_SET(gINDICATORHandle, caps.supportedStates[i], result);
+        UT_ASSERT_TRUE(result);
+    }
+    return;
+}
+
+UT_ADD_TEST(VTS_L1_INDICATOR, l1_get_pos)
+{
+    bool result = false;
+    com::rdk::hal::indicator::State getState;
+    INDICATOR_SET(gINDICATORHandle, com::rdk::hal::indicator::State::ACTIVE, result);
+    UT_ASSERT_TRUE(result);
+    INDICATOR_GET(gINDICATORHandle, getState);
+    UT_ASSERT_EQUAL(getState, com::rdk::hal::indicator::State::ACTIVE);
+    return;
+}
+
+// Test case for set negative scenarios
+ UT_ADD_TEST(VTS_L1_INDICATOR, l1_set_neg)
+{
+    bool result = false;
+ 
+    INDICATOR_SET(gINDICATORHandle, com::rdk::hal::indicator::State::BOOT, result);
+    UT_ASSERT_FALSE(result);
+
+    INDICATOR_SET(gINDICATORHandle, com::rdk::hal::indicator::State::ERROR_UNKNOWN, result);
+    UT_ASSERT_FALSE(result);
+    
+    return;
+}
  
  
  /**

@@ -73,9 +73,17 @@ namespace com
                     if (!_aidl_return) return ::android::binder::Status::fromExceptionCode(
                         ::android::binder::Status::EX_NULL_POINTER);
                 
-                    // Example: accept all states
                     //mCurrentState = state;
-                    *_aidl_return = true;
+                    if(state == State::BOOT || state == State::ERROR_UNKNOWN)
+                    {
+                        *_aidl_return = false;
+                        mCurrentState == State::ERROR_UNKNOWN;
+                    }
+                    else
+                    {
+                        *_aidl_return = true;
+                        mCurrentState = state;
+                    }
                 
                     return ::android::binder::Status::ok();
                 }
@@ -84,7 +92,7 @@ namespace com
                     if (!_aidl_return) return ::android::binder::Status::fromExceptionCode(
                         ::android::binder::Status::EX_NULL_POINTER);
                 
-                    //*_aidl_return = mCurrentState;
+                    *_aidl_return = mCurrentState;
                     return ::android::binder::Status::ok();
                 }
                 
