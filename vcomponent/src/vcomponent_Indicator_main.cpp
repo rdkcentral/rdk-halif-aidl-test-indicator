@@ -20,7 +20,7 @@
 /** @brief
 * vcomponent_Indicator_main.cpp
 *
-* Main entry point for the DeviceInfo service
+* Main entry point for the Indicator service
 */
 
 

@@ -20,7 +20,7 @@
 /* 
 * @brief 
 * vcomponent_Indicator.cpp
-* Implementation of the DeviceInfo service implementation
+* Implementation of the Indicator service implementation
 */
 
 #include "vcomponent_Indicator.h"
@@ -103,7 +103,7 @@ namespace com
                 }
     
 
-            } // namespace deviceinfo
+            } // namespace indicator
         } // namespace hal
     } // namespace rdk
 } // namespace com

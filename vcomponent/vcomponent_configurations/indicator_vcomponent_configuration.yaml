@@ -35,27 +35,27 @@ indicator:
   interfaceVersion: current
   supportedStates:
     # General system states
-     BOOT    : "RED"
-     ACTIVE  : "GREEN"
-     STANDBY : "YELLOW"
-     OFF     : "RED"
-     DEEP_SLEEP : "NO_COLOUR"
+     BOOT    : 0
+     ACTIVE  : 1
+     STANDBY : 2
+     OFF     : 3
+     DEEP_SLEEP : 4
 
     # WPS-related states
-     WPS_CONNECTING : "YELLOW"
-     WPS_CONNECTED : "GREEN"
-     WPS_ERROR      : "RED"
-     WPS_SES_OVERLAP : "RED"
+     WPS_CONNECTING : 100
+     WPS_CONNECTED :  101
+     WPS_ERROR      : 102
+     WPS_SES_OVERLAP : 103
 
     # Network and connectivity states
-     WIFI_ERROR  : "RED"
-     IP_ACQUIRED : "GREEN"
-     NO_IP       : "RED"
+     WIFI_ERROR  : 200
+     IP_ACQUIRED : 201
+     NO_IP       : 202
 
     # System operation and maintenance
-     FULL_SYSTEM_RESET : "RED"
-     USB_UPGRADE : "GREEN"
-     SOFTWARE_DOWNLOAD_ERROR : "RED"
+     FULL_SYSTEM_RESET : 300
+     USB_UPGRADE : 301
+     SOFTWARE_DOWNLOAD_ERROR : 302
 
     # Fault or diagnostics
-     PSU_FAILURE : "NO_COLOUR"
+     PSU_FAILURE : 303

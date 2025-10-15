@@ -20,7 +20,7 @@
 /** @brief
 * vcomponent_Indicator_parse_config.h
 *
-* Header file for vcomponent DeviceInfo driver
+* Header file for vcomponent Indicator driver
 */
 
 #pragma once
@@ -52,6 +52,6 @@ typedef struct indicatorConfiguration
     std::string psuFailure;
 } indicatorConfiguration_t;
 
-extern indicatorConfiguration_t gDeviceInfoConfig;
+extern indicatorConfiguration_t gIndicatorConfig;
 
 void vcomponent_Indicator_parse_config(char *configurationFile);

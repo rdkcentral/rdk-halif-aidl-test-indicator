@@ -66,7 +66,7 @@ void vcomponent_Indicator_parse_config(char *configurationFile)
     ut_kvp_instance_t* instance = (ut_kvp_instance_t*)vcomponent_indicator_kvp_create_instance(configurationFile);
     if(!instance)
     {
-        UT_LOG_ERROR("[VCOMPONENT_DEVICEINFO]Failed to create kvp instance");
+        UT_LOG_ERROR("[VCOMPONENT_INDICATOR]Failed to create kvp instance");
         return;
     }
 
