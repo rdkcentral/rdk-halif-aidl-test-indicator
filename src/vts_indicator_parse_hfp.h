@@ -74,7 +74,7 @@
  
  UT_status_t vts_indicator_parse_hfp();
  
- #endif //__VTS_HDMICEC_PARSE_HFP_H__
+ #endif //__VTS_INDICATOR_PARSE_HFP_H__
  
  /** @} */ // End of INDICATOR_HALTEST_PARSE_HFP_HEADER
  /** @} */ // End of INDICATOR_HALTEST

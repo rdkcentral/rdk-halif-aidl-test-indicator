@@ -34,24 +34,9 @@
 
 typedef struct indicatorConfiguration
 {
-    std::string boot;                // Mandatory
-    std::string active;             // Mandatory (3 bytes)
-    std::string standby;                   // Mandatory
-    std::string off;                // Mandatory
-    std::string deepsleep;                // Mandatory
-    std::string wpsConnecting;                     // Mandatory if Wi-Fi present
-    std::string wpsConnected;                // Mandatory if BT present
-    std::string wpsError;                      // Optional (8 digits)
-    std::string wpsSesOverlap;                 // Mandatory if Ethernet present
-    std::string wifiError;                    // Mandatory if RF4CE present
-    std::string ipAcquired;                   // Mandatory
-    std::string noIP;                   // Mandatory
-    std::string fullSystemReset;                 // Optional
-    std::string usbUpgrade;                // Optional
-    std::string softwareDownloadError;           // Optional
-    std::string psuFailure;
+  std::vector<::com::rdk::hal::indicator::State> supportedStatesValues;
 } indicatorConfiguration_t;
 
-extern indicatorConfiguration_t gIndicatorConfig;
+extern indicatorConfiguration_t gIndicatorConfig; //karthi
 
 void vcomponent_Indicator_parse_config(char *configurationFile);

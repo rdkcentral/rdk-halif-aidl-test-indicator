@@ -25,10 +25,9 @@
 
 #include "vcomponent_Indicator_parse_config.h"
 
-indicatorConfiguration_t gindicatorConfiguration;
-
 static std::string prefix;
 static std::string key;
+indicatorConfiguration_t gIndicatorConfig = {};
 
 static void* vcomponent_indicator_kvp_create_instance(char *fileName)
 {
@@ -60,7 +59,6 @@ static void vcomponent_indicator_kvp_destroy_instance(void *instance)
     ut_kvp_destroyInstance((ut_kvp_instance_t*)instance);
 }
 
-
 void vcomponent_Indicator_parse_config(char *configurationFile)
 {
     ut_kvp_instance_t* instance = (ut_kvp_instance_t*)vcomponent_indicator_kvp_create_instance(configurationFile);
@@ -70,32 +68,34 @@ void vcomponent_Indicator_parse_config(char *configurationFile)
         return;
     }
 
-    indicatorConfiguration_t indc = {};
+    indicatorConfiguration_t devConfig = {};
 
-    // Example of reading a string value from the configuration file
-    prefix = "indicator/supportedStates/";
-    char value[256];
-    memset(value, 0, sizeof(value));
+    const std::vector<std::string> indicatorStates = {
+        "BOOT", "ACTIVE", "STANDBY", "OFF", "DEEP_SLEEP",
+        "WPS_CONNECTING", "WPS_CONNECTED", "WPS_ERROR", "WPS_SES_OVERLAP", "WIFI_ERROR",
+        "IP_ACQUIRED", "NO_IP", "FULL_SYSTEM_RESET", "USB_UPGRADE", "SOFTWARE_DOWNLOAD_ERROR", "PSU_FAILURE"
+    };
 
-    indc.boot = ut_kvp_getStringField(instance, (prefix + "BOOT").c_str(), value, sizeof(value));
-    indc.active = ut_kvp_getStringField(instance, (prefix + "ACTIVE").c_str(), value, sizeof(value));
-    indc.standby = ut_kvp_getStringField(instance, (prefix + "STANDBY").c_str(), value, sizeof(value));
-    indc.off = ut_kvp_getStringField(instance, (prefix + "OFF").c_str(), value, sizeof(value));
-    indc.deepsleep = ut_kvp_getStringField(instance, (prefix + "DEEP_SLEEP").c_str(), value, sizeof(value));
-    indc.wpsConnecting = ut_kvp_getStringField(instance, (prefix + "WPS_CONNECTING").c_str(), value, sizeof(value));
-    indc.wpsConnected = ut_kvp_getStringField(instance, (prefix + "WPS_CONNECTED").c_str(), value, sizeof(value));
-    indc.wpsError = ut_kvp_getStringField(instance, (prefix + "WPS_ERROR").c_str(), value, sizeof(value));
-    indc.wpsSesOverlap = ut_kvp_getStringField(instance, (prefix + "WPS_SES_OVERLAP").c_str(), value, sizeof(value));
-    indc.wifiError = ut_kvp_getStringField(instance, (prefix + "WIFI_ERROR").c_str(), value, sizeof(value));
-    indc.ipAcquired = ut_kvp_getStringField(instance, (prefix + "IP_ACQUIRED").c_str(), value, sizeof(value));
-    indc.noIP = ut_kvp_getStringField(instance, (prefix + "NO_IP").c_str(), value, sizeof(value));
-    indc.fullSystemReset = ut_kvp_getStringField(instance, (prefix + "FULL_SYSTEM_RESET").c_str(), value, sizeof(value));
-    indc.usbUpgrade = ut_kvp_getStringField(instance, (prefix + "USB_UPGRADE").c_str(), value, sizeof(value));
-    indc.softwareDownloadError = ut_kvp_getStringField(instance, (prefix + "SOFTWARE_DOWNLOAD_ERROR").c_str(), value, sizeof(value));
-    indc.psuFailure = ut_kvp_getStringField(instance, (prefix + "PSU_FAILURE").c_str(), value, sizeof(value));
+    prefix = "IIndicator/supportedStates/";
 
-    gindicatorConfiguration = indc;
-    
+    for (const auto& state : indicatorStates) 
+    {
+        std::string fullPath = prefix + state;
+        if (ut_kvp_fieldPresent(instance, fullPath.c_str())) 
+        {
+            uint32_t value = ut_kvp_getUInt32Field(instance, fullPath.c_str());
+            UT_LOG_INFO("supportedStates value:%d", value);
+            devConfig.supportedStatesValues.push_back(static_cast<::com::rdk::hal::indicator::State>(value));
+        } 
+        else 
+        {
+            UT_LOG_DEBUG("key not found in yaml, continue");
+        }
+      }
+
+    gIndicatorConfig = devConfig;
+
     vcomponent_indicator_kvp_destroy_instance(instance);
 }
+
 

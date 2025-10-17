@@ -102,10 +102,6 @@
          UT_LOG_ERROR("Failed to get Indicator Service");
          return UT_STATUS_FAILURE;
      }
-     // if(vts_indicator_parse_hfp() != UT_STATUS_OK)
-     // {
-     //     UT_LOG_ERROR("Failed to process the DeviceInfo HFP file");
-     // }
  
      return UT_STATUS_OK;
  }

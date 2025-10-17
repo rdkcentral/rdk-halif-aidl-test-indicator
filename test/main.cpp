@@ -32,21 +32,21 @@
  */
 
 /**
- * @addtogroup HDMI_CEC HDMI CEC Module
+ * @addtogroup INDICATOR Module
  * @{
  */
 
 /**
- * @defgroup HDMI_CEC_HALTEST HDMI CEC HAL Tests
+ * @defgroup INDICATOR_HALTEST INDICATOR HAL Tests
  * @{
  */
 
 /**
- * @defgroup HDMI_CEC_HALTEST_MAIN HDMI CEC HAL Tests Main File
+ * @defgroup INDICATOR_HALTEST_MAIN INDICATOR HAL Tests Main File
  *  @{
  * @parblock
  *
- * ### Tests for HDMI CECHAL :
+ * ### Tests for INDICATOR HAL :
  *
  * This is to ensure that the API meets the operational requirements of the module across all vendors.
  *
@@ -75,7 +75,6 @@ int main(int argc, char **argv)
     UT_LOG_INFO("\t BUILD_TIMESTAMP: \033[0;32m%s\033[0m", BUILD_TIMESTAMP);
     UT_LOG_INFO("\t UNIFIED VTS Version: \033[0;32m%s\033[0m", HALIF_TEST_PROJECT_VERSION);
     UT_LOG_INFO("\t AIDL HALIF Version: \033[0;32m%s\033[0m",RDK_HALIF_AIDL_VERSION);
-   // UT_LOG_INFO("\t VTS UNIFIED HDMI CEC HALIF Test Version: \033[0;32m%s\033[0m",HDMICEC_VERSION);
     UT_LOG_INFO("==========================================================================");
 
     result = VTS_INDICATOR_init();
@@ -87,7 +86,7 @@ int main(int argc, char **argv)
     return result;
 }
 
-/** @} */ // End of HDMI_CEC_HALTEST_MAIN
-/** @} */ // End of HDMI_CEC_HALTEST
-/** @} */ // End of HDMI_CEC Module
+/** @} */ // End of INDICATOR_HALTEST_MAIN
+/** @} */ // End of INDICATOR_HALTEST
+/** @} */ // End of INDICATOR Module
 /** @} */ // End of HPK

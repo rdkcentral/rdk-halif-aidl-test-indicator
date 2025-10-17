@@ -33,4 +33,4 @@ using namespace std;
 
 bool IndicatorInit(char *configFile);
 
-#endif 
+#endif //

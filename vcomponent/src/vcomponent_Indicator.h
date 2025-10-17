@@ -44,7 +44,6 @@
                      Indicator();
                      virtual ~Indicator();
  
-                     //::android::IBinder *onAsBinder() override;
                      State mCurrentState = State::ERROR_UNKNOWN;
 
                      ::android::binder::Status getCapabilities(Capabilities *_aidl_return) override;
