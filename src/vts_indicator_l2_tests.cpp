@@ -79,7 +79,7 @@ public:
 
     void SetUp() override
     {
-        // android::ProcessState::self()->startThreadPool();
+        android::ProcessState::self()->startThreadPool();
     }
 
     void TearDown() override
@@ -87,44 +87,6 @@ public:
     }
 };
 
-/**
- * @brief Test for getCapabilities() function of IIndicator interface
- *
- * This test verifies that the getCapabilities() method of the IIndicator interface
- * gives the Capabilities structure with the supported indicator states.
- *
- * **Test Group ID:** 02@n
- * **Test Case ID:** 001@n
- *
- * **Test Procedure:**
- * Refer to Indicator specification documentation [indicator_L2_Low-Level_TestSpecification](../docs/pages/)
- */
-UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_getCapablities)
-{
-    com::rdk::hal::indicator::Capabilities caps;
-    INDICATOR_GET_CAPABILITIES(gINDICATORHandle, caps);
-    size_t supportedCount = UT_KVP_PROFILE_GET_LIST_COUNT("IIndicator.supportedStates");
-    UT_ASSERT_EQUAL(caps.supportedStates.size(), supportedCount);
-    bool result = true;
-    for (size_t i = 0; i < supportedCount; i++) 
-    {
-        std::string key_string = "IIndicator.supportedStates." + std::to_string(i);
-        char states[256] = {0};
-        UT_KVP_PROFILE_GET_STRING(key_string.c_str(), states);
-        if (states[0] != '\0') 
-        {
-            com::rdk::hal::indicator::State stateEnum = stringToState(states);
-            if (!(std::find(caps.supportedStates.begin(), caps.supportedStates.end(), stateEnum) != caps.supportedStates.end())) 
-            {
-                UT_LOG_INFO("State %s mismatch in supported list\n", states);
-                result = false;
-                break;
-            }
-        }
-    }
-    UT_ASSERT_TRUE(result);
-    return;
-}
 
 /**
  * @brief Test for set() and get() functions of IIndicator interface for General states
@@ -146,9 +108,15 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetGeneralStates)
     
     INDICATOR_GET_CAPABILITIES(gINDICATORHandle, caps);
 
-    for(int32_t i = 1; i <= 4; i++) 
+    std::vector<com::rdk::hal::indicator::State> generalStates = {
+        com::rdk::hal::indicator::State::ACTIVE,
+        com::rdk::hal::indicator::State::STANDBY,
+        com::rdk::hal::indicator::State::OFF,
+        com::rdk::hal::indicator::State::DEEP_SLEEP
+    };
+    
+    for (const auto& general_state : generalStates) 
     {
-        auto general_state = static_cast<com::rdk::hal::indicator::State>(i);
         if (!(std::find(caps.supportedStates.begin(), caps.supportedStates.end(), general_state) != caps.supportedStates.end())) 
         {
                 UT_LOG_INFO("%s state is not supported", stateToString(general_state).c_str());
@@ -158,7 +126,7 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetGeneralStates)
         UT_ASSERT_TRUE(result);
         INDICATOR_GET(gINDICATORHandle, getState);
         UT_ASSERT_EQUAL(getState, general_state);
-    }   
+    }
     
     return;
 }
@@ -183,20 +151,26 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetWpsStates)
     
     INDICATOR_GET_CAPABILITIES(gINDICATORHandle, caps);
 
-    for(int32_t i = 100; i <= 103; i++) 
+    std::vector<com::rdk::hal::indicator::State> wpsStates = {
+        com::rdk::hal::indicator::State::WPS_CONNECTING,
+        com::rdk::hal::indicator::State::WPS_CONNECTED,
+        com::rdk::hal::indicator::State::WPS_ERROR,
+        com::rdk::hal::indicator::State::WPS_SES_OVERLAP
+    };
+
+    for (const auto& wps_state : wpsStates) 
     {
-        auto wps_state = static_cast<com::rdk::hal::indicator::State>(i);
         if (!(std::find(caps.supportedStates.begin(), caps.supportedStates.end(), wps_state) != caps.supportedStates.end())) 
         {
                 UT_LOG_INFO("%s state is not supported", stateToString(wps_state).c_str());
                 continue;
         }
-
         INDICATOR_SET(gINDICATORHandle, wps_state, result);
         UT_ASSERT_TRUE(result);
         INDICATOR_GET(gINDICATORHandle, getState);
         UT_ASSERT_EQUAL(getState, wps_state);
-    }   
+    }
+
     return;
 }
 
@@ -220,9 +194,14 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetNetworkStates)
     
     INDICATOR_GET_CAPABILITIES(gINDICATORHandle, caps);
 
-    for(int32_t i = 200; i <= 202 ; i++) 
+    std::vector<com::rdk::hal::indicator::State> networkStates = {
+        com::rdk::hal::indicator::State::WIFI_ERROR,
+        com::rdk::hal::indicator::State::IP_ACQUIRED,
+        com::rdk::hal::indicator::State::NO_IP
+    };
+
+    for (const auto& network_state : networkStates) 
     {
-        auto network_state = static_cast<com::rdk::hal::indicator::State>(i);
         if (!(std::find(caps.supportedStates.begin(), caps.supportedStates.end(), network_state) != caps.supportedStates.end())) 
         {
                 UT_LOG_INFO("%s state is not supported", stateToString(network_state).c_str());
@@ -232,7 +211,8 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetNetworkStates)
         UT_ASSERT_TRUE(result);
         INDICATOR_GET(gINDICATORHandle, getState);
         UT_ASSERT_EQUAL(getState, network_state);
-    }   
+    }
+
     return;
 }
 
@@ -256,9 +236,14 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetMaintenanceStates)
     
     INDICATOR_GET_CAPABILITIES(gINDICATORHandle, caps);
 
-    for(int32_t i = 300; i <= 303 ; i++) 
+    std::vector<com::rdk::hal::indicator::State> maintenanceStates = {
+        com::rdk::hal::indicator::State::FULL_SYSTEM_RESET,
+        com::rdk::hal::indicator::State::USB_UPGRADE,
+        com::rdk::hal::indicator::State::SOFTWARE_DOWNLOAD_ERROR,
+        com::rdk::hal::indicator::State::PSU_FAILURE
+    };
+    for (const auto& system_state : maintenanceStates) 
     {
-        auto system_state = static_cast<com::rdk::hal::indicator::State>(i);
         if (!(std::find(caps.supportedStates.begin(), caps.supportedStates.end(), system_state) != caps.supportedStates.end())) 
         {
                 UT_LOG_INFO("%s state is not supported", stateToString(system_state).c_str());
@@ -268,7 +253,8 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetMaintenanceStates)
         UT_ASSERT_TRUE(result);
         INDICATOR_GET(gINDICATORHandle, getState);
         UT_ASSERT_EQUAL(getState, system_state);
-    }   
+    }
+    
     return;
 }
 

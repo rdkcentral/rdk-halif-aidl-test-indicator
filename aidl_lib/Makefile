@@ -32,7 +32,9 @@ AIDL_SRC_DIR := ${AIDL_GEN_DIR}/cpp/com/rdk/hal/
 
 # Source files
 AIDL_SRC := $(shell find $(AIDL_SRC_DIR) -type f \( -name '*.cpp' -o -name '*.c' \))
+AIDL_OBJ := $(AIDL_SRC:%.cpp=%.o)
 
+AIDL_LIB_PATH := $(BUILD_DIR)/usr/lib/$(AIDL_LIB)
 
 AIDL_LIB_INC_FLAGS := -I$(AIDL_GEN_DIR)/h
 AIDL_LIB_INC_FLAGS += -I$(BUILD_DIR)/usr/include
@@ -54,3 +56,8 @@ $(AIDL_LIB): $(AIDL_SRC:%.cpp=%.o)
 
 %.o: %.cpp
 	g++ $(AIDL_LIB_CFLAGS) $(AIDL_LIB_INC_FLAGS) -fPIC -c $< -o $@
+
+# Clean target
+clean:
+	@echo "Cleaning object files and library..."
+	rm -f $(AIDL_OBJ) $(AIDL_LIB_PATH)

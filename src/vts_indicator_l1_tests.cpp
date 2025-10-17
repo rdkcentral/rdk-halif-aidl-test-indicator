@@ -78,7 +78,7 @@
     
         void SetUp() override
         {
-            // android::ProcessState::self()->startThreadPool();
+            android::ProcessState::self()->startThreadPool();
         }
     
         void TearDown() override
@@ -86,17 +86,119 @@
         }
  };
  
- // Test case for getCapabilities, set, and get positive scenarios
- UT_ADD_TEST(VTS_L1_INDICATOR, l1_getCaps_pos)
- {
+ /**
+ * @brief Validates that the Indicator HAL getCapabilities() API returns all supported states
+ *
+ * This test ensures that:
+ * - The getCapabilities() API correctly returns the Capabilities object.
+ * - All supported states defined in the KVP profile (IIndicator.supportedStates) 
+ *   are present in the returned Capabilities object.
+ *
+ * **Test Group ID:** Basic: 01@n
+ * **Test Case ID:** 001@n
+ * **Priority:** High@n
+ *
+ * **Pre-Conditions:**@n
+ * - Indicator HAL must be initialized and gINDICATORHandle must be valid@n
+ * - The supported states must be correctly configured in the profile@n
+ *
+ * **Dependencies:**@n
+ * - gINDICATORHandle must be valid@n
+ *
+ * **User Interaction:** None@n
+ *
+ * **Test Procedure:**@n
+ * | Step | Action | Input | Expected Result | Remarks |
+ * |01|Call getCapabilities() API|N/A|Returns a Capabilities object|Mandatory step|
+ * |02|Verify that the number of supported states matches the profile count|IIndicator.supportedStates|caps.supportedStates.size() == profile count|Ensures all configured states are returned|
+ * |03|Verify each supported state from profile is present in caps.supportedStates|Profile entry string -> enum (stringToState)|All profile states exist in caps.supportedStates|Logs a mismatch if any state is missing|
+ */
+UT_ADD_TEST(VTS_L1_INDICATOR, getCapablities_pos)
+{
     com::rdk::hal::indicator::Capabilities caps;
+    bool result = true;
     INDICATOR_GET_CAPABILITIES(gINDICATORHandle, caps);
-    UT_ASSERT_EQUAL(caps.supportedStates.size(), 
-                    UT_KVP_PROFILE_GET_LIST_COUNT("IIndicator.supportedStates"));
+
+    size_t supportedCount = UT_KVP_PROFILE_GET_LIST_COUNT("IIndicator.supportedStates");
+    UT_ASSERT_EQUAL(caps.supportedStates.size(), supportedCount);
+
+    for (size_t i = 0; i < supportedCount; i++) 
+    {
+        std::string key_string = "IIndicator.supportedStates." + std::to_string(i);
+        char states[256] = {0};
+        UT_KVP_PROFILE_GET_STRING(key_string.c_str(), states);
+        if (states[0] != '\0') 
+        {
+            com::rdk::hal::indicator::State stateEnum = stringToState(states);
+            if (!(std::find(caps.supportedStates.begin(), caps.supportedStates.end(), stateEnum) != caps.supportedStates.end())) 
+            {
+                UT_LOG_INFO("State %s mismatch in supported list\n", states);
+                result = false;
+                break;
+            }
+        }
+    }
+    UT_ASSERT_TRUE(result);
     return;
 }
 
-UT_ADD_TEST(VTS_L1_INDICATOR, l1_set_pos)
+/**
+ * @brief L1 Positive Test for the Indicator HAL get() API
+ *
+ * This test verifies that the HAL correctly returns the current indicator state.
+ *
+ * **Test Group ID:** Basic: 01@n
+ * **Test Case ID:** 002@n
+ * **Priority:** High@n
+ *
+ * **Pre-Conditions:**@n
+ * - Indicator HAL must be initialized and gINDICATORHandle must be valid@n
+ *
+ * **Dependencies:**@n
+ * - gINDICATORHandle must be valid@n
+ *
+ * **User Interaction:** None@n
+ *
+ * **Test Procedure:**@n
+ * |Step|Description|Test Data|Expected Result|Notes|
+ * |----|-----------|---------|---------------|-----|
+ * |01  |Call get() API|N/A|Returns the current indicator state|Mandatory step|
+ * |02  |Verify returned state|getState|Should be ERROR_UNKNOWN|Default initial state|
+ */
+UT_ADD_TEST(VTS_L1_INDICATOR, get_pos)
+{
+    com::rdk::hal::indicator::State getState;
+    
+    INDICATOR_GET(gINDICATORHandle, getState);
+    UT_ASSERT_EQUAL(getState, com::rdk::hal::indicator::State::ERROR_UNKNOWN);
+    return;
+}
+
+/**
+ * @brief L1 Positive Test for the Indicator HAL set() API
+ *
+ * This test verifies that the HAL correctly sets all supported indicator states.
+ *
+ * **Test Group ID:** Basic: 01@n
+ * **Test Case ID:** 003@n
+ * **Priority:** High@n
+ *
+ * **Pre-Conditions:**@n
+ * - Indicator HAL must be initialized and gINDICATORHandle must be valid@n
+ * - Capabilities must be retrieved successfully via getCapabilities() API@n
+ *
+ * **Dependencies:**@n
+ * - gINDICATORHandle must be valid@n
+ *
+ * **User Interaction:** None@n
+ *
+ * **Test Procedure:**@n
+ * |Step|Description|Test Data|Expected Result|Notes|@n
+ * |----|-----------|---------|---------------|-----|@n
+ * |01  |Retrieve capabilities|N/A|Caps object returned with supported states|Mandatory step|@n
+ * |02  |Loop through supported states and call set()|caps.supportedStates|All set() calls succeed|Skips index 0 if initial state is ERROR_UNKNOWN|@n
+ */
+UT_ADD_TEST(VTS_L1_INDICATOR, set_pos)
 {
     bool result = false;
     
@@ -111,19 +213,31 @@ UT_ADD_TEST(VTS_L1_INDICATOR, l1_set_pos)
     return;
 }
 
-UT_ADD_TEST(VTS_L1_INDICATOR, l1_get_pos)
-{
-    bool result = false;
-    com::rdk::hal::indicator::State getState;
-    INDICATOR_SET(gINDICATORHandle, com::rdk::hal::indicator::State::ACTIVE, result);
-    UT_ASSERT_TRUE(result);
-    INDICATOR_GET(gINDICATORHandle, getState);
-    UT_ASSERT_EQUAL(getState, com::rdk::hal::indicator::State::ACTIVE);
-    return;
-}
-
-// Test case for set negative scenarios
- UT_ADD_TEST(VTS_L1_INDICATOR, l1_set_neg)
+/**
+ * @brief L1 Negative Test for the Indicator HAL set() API
+ *
+ * This test verifies that the HAL correctly rejects unsupported or invalid states.
+ *
+ * **Test Group ID:** Basic: 01@n
+ * **Test Case ID:** 004@n
+ * **Priority:** High@n
+ *
+ * **Pre-Conditions:**@n
+ * - Indicator HAL must be initialized and gINDICATORHandle must be valid@n
+ *
+ * **Dependencies:**@n
+ * - gINDICATORHandle must be valid@n
+ *
+ * **User Interaction:** None@n
+ *
+ * **Test Procedure:**@n
+ * |Step|Description|Test Data|Expected Result|Notes|@n
+ * |----|-----------|---------|---------------|-----|@n
+ * |01  |Attempt to set BOOT state|State::BOOT|set() returns false|BOOT state is not allowed|@n
+ * |02  |Attempt to set ERROR_UNKNOWN state|State::ERROR_UNKNOWN|set() returns false|ERROR_UNKNOWN state is not allowed|@n
+ * |03  |Attempt to set an invalid state outside enum|static_cast<State>(400)|set() returns false|Invalid enum value rejected|@n
+ */
+ UT_ADD_TEST(VTS_L1_INDICATOR, set_neg)
 {
     bool result = false;
  
@@ -131,6 +245,9 @@ UT_ADD_TEST(VTS_L1_INDICATOR, l1_get_pos)
     UT_ASSERT_FALSE(result);
 
     INDICATOR_SET(gINDICATORHandle, com::rdk::hal::indicator::State::ERROR_UNKNOWN, result);
+    UT_ASSERT_FALSE(result);
+
+    INDICATOR_SET(gINDICATORHandle, static_cast<com::rdk::hal::indicator::State>(400), result);
     UT_ASSERT_FALSE(result);
     
     return;

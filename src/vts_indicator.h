@@ -69,6 +69,7 @@
  #include <com/rdk/hal/indicator/BpIndicator.h>
  #include <com/rdk/hal/indicator/Capabilities.h>
  #include <utils/String16.h>
+ #include "vts_indicator_parse_hfp.h"
  
  using android::sp;
  using android::String8;

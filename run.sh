@@ -68,14 +68,7 @@ start_vcomponent_service()
 if check_process $VCOMPONENT_SERVICE_NAME; then
     echo "${VCOMPONENT_SERVICE_NAME} is already running"
     mocservice_pid=$(pgrep -f $VCOMPONENT_SERVICE_NAME)
-    if prompt_yes_no "Do you want to re-start ${VCOMPONENT_SERVICE_NAME}?"; then
-        echo "Killing existing ${VCOMPONENT_SERVICE_NAME} (PID: $mocservice_pid)"
-        kill $mocservice_pid
-        sleep 2
-        start_vcomponent_service
-    else
-        echo "Continuing with existing ${VCOMPONENT_SERVICE_NAME} (PID: $mocservice_pid)"
-    fi
+    echo "Continuing with existing ${VCOMPONENT_SERVICE_NAME} (PID: $mocservice_pid)"
 else
     start_vcomponent_service
 fi
