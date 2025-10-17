@@ -42,6 +42,7 @@ declare -A HALIF_TEST_COMPONENTS=(
 
 # Define the directory where the repository will be cloned
 declare -r UT_CORE_DIR="${TOP}/ut-core"
+declare -r VCOMPONENT_DIR="${TOP}/vcomponent"
 declare -r TOP_BUILD_DIR="${TOP}/build"
 declare -r COMMON_DIR="${TOP}/common"
 declare -r BUILD_INSTALL_PREFIX=${TOP_BUILD_DIR}/usr
@@ -181,6 +182,18 @@ build_ut_core()
 ###############################################################################
 build_vcomponent_services()
 {
+    if [ ! -d ${VCOMPONENT_DIR} ]; then
+        git clone git@github.com:rdkcentral/rdk-aidl-vcomponent-indicator.git ${VCOMPONENT_DIR}
+        if [ $? -ne 0 ]; then
+            echo "Failed to clone the repository. Exiting."
+            exit 1
+        fi
+    fi
+
+    pushd ${VCOMPONENT_DIR}
+
+    git checkout feature/vcomponent-indicator #Remove this line, once vcomponent PR is merged
+    
     make -j"$(nproc)" -C "${TOP}/vcomponent" BUILD_DIR="${TOP_BUILD_DIR}" UT_CORE_DIR="${UT_CORE_DIR}"
     if [ $? -ne 0 ]; then
         echo -e "${BOLD}╔════════════════════════════════════════════════╗${RESET}"
@@ -188,6 +201,7 @@ build_vcomponent_services()
         echo -e "${BOLD}╚════════════════════════════════════════════════╝${RESET}"
         exit 1
     fi
+    popd
 }
 
 ###############################################################################
