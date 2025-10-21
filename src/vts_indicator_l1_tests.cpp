@@ -94,7 +94,7 @@
  * - All supported states defined in the KVP profile (IIndicator.supportedStates) 
  *   are present in the returned Capabilities object.
  *
- * **Test Group ID:** Basic: 01@n
+ * **Test Group ID:** 01@n
  * **Test Case ID:** 001@n
  * **Priority:** High@n
  *
@@ -125,16 +125,25 @@ UT_ADD_TEST(VTS_L1_INDICATOR, getCapablities_pos)
     for (size_t i = 0; i < supportedCount; i++) 
     {
         std::string key_string = "IIndicator.supportedStates." + std::to_string(i);
-        char states[256] = {0};
-        UT_KVP_PROFILE_GET_STRING(key_string.c_str(), states);
-        if (states[0] != '\0') 
+        char expectedStateStr[256] = {0};
+        UT_KVP_PROFILE_GET_STRING(key_string.c_str(), expectedStateStr);
+
+        if (expectedStateStr[0] != '\0') 
         {
-            com::rdk::hal::indicator::State stateEnum = stringToState(states);
-            if (!(std::find(caps.supportedStates.begin(), caps.supportedStates.end(), stateEnum) != caps.supportedStates.end())) 
+            bool matchFound = false;
+            for (const auto& stateEnum : caps.supportedStates)
             {
-                UT_LOG_INFO("State %s mismatch in supported list\n", states);
+                if (toString(stateEnum) == expectedStateStr) 
+                {
+                    matchFound = true;
+                    break;
+                }
+            }
+
+            if (!matchFound) 
+            {
+                UT_LOG_INFO("State %s mismatch in supported list\n", expectedStateStr);
                 result = false;
-                break;
             }
         }
     }
@@ -147,7 +156,7 @@ UT_ADD_TEST(VTS_L1_INDICATOR, getCapablities_pos)
  *
  * This test verifies that the HAL correctly returns the current indicator state.
  *
- * **Test Group ID:** Basic: 01@n
+ * **Test Group ID:** 01@n
  * **Test Case ID:** 002@n
  * **Priority:** High@n
  *
@@ -179,7 +188,7 @@ UT_ADD_TEST(VTS_L1_INDICATOR, get_pos)
  *
  * This test verifies that the HAL correctly sets all supported indicator states.
  *
- * **Test Group ID:** Basic: 01@n
+ * **Test Group ID:** 01@n
  * **Test Case ID:** 003@n
  * **Priority:** High@n
  *
@@ -218,7 +227,7 @@ UT_ADD_TEST(VTS_L1_INDICATOR, set_pos)
  *
  * This test verifies that the HAL correctly rejects unsupported or invalid states.
  *
- * **Test Group ID:** Basic: 01@n
+ * **Test Group ID:** 01@n
  * **Test Case ID:** 004@n
  * **Priority:** High@n
  *

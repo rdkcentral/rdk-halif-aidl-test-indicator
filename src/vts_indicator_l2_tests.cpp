@@ -95,7 +95,7 @@ public:
  * can set and get the general indicator states: ACTIVE, STANDBY, OFF, DEEP_SLEEP.
  *
  * **Test Group ID:** 02@n
- * **Test Case ID:** 002@n
+ * **Test Case ID:** 001@n
  *
  * **Test Procedure:**
  * Refer to Indicator specification documentation [indicator_L2_Low-Level_TestSpecification](../docs/pages/)
@@ -119,7 +119,7 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetGeneralStates)
     {
         if (!(std::find(caps.supportedStates.begin(), caps.supportedStates.end(), general_state) != caps.supportedStates.end())) 
         {
-                UT_LOG_INFO("%s state is not supported", stateToString(general_state).c_str());
+                UT_LOG_INFO("%s state is not supported", toString(general_state).c_str());
                 continue;
         }
         INDICATOR_SET(gINDICATORHandle, general_state, result);
@@ -138,7 +138,7 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetGeneralStates)
  * can set and get the WPS indicator states: WPS_CONNECTING, WPS_CONNECTED, WPS_ERROR, WPS_SES_OVERLAP.
  *
  * **Test Group ID:** 02@n
- * **Test Case ID:** 003@n
+ * **Test Case ID:** 002@n
  *
  * **Test Procedure:**
  * Refer to Indicator specification documentation [indicator_L2_Low-Level_TestSpecification](../docs/pages/)
@@ -162,7 +162,7 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetWpsStates)
     {
         if (!(std::find(caps.supportedStates.begin(), caps.supportedStates.end(), wps_state) != caps.supportedStates.end())) 
         {
-                UT_LOG_INFO("%s state is not supported", stateToString(wps_state).c_str());
+                UT_LOG_INFO("%s state is not supported", toString(wps_state).c_str());
                 continue;
         }
         INDICATOR_SET(gINDICATORHandle, wps_state, result);
@@ -181,7 +181,7 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetWpsStates)
  * can set and get the Network indicator states: WIFI_ERROR, IP_ACQUIRED, NO_IP.
  *
  * **Test Group ID:** 02@n
- * **Test Case ID:** 004@n
+ * **Test Case ID:** 003@n
  *
  * **Test Procedure:**
  * Refer to Indicator specification documentation [indicator_L2_Low-Level_TestSpecification](../docs/pages/)
@@ -204,7 +204,7 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetNetworkStates)
     {
         if (!(std::find(caps.supportedStates.begin(), caps.supportedStates.end(), network_state) != caps.supportedStates.end())) 
         {
-                UT_LOG_INFO("%s state is not supported", stateToString(network_state).c_str());
+                UT_LOG_INFO("%s state is not supported", toString(network_state).c_str());
                 continue;
         }
         INDICATOR_SET(gINDICATORHandle, network_state, result);
@@ -223,7 +223,7 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetNetworkStates)
  * can set and get the Maintenance indicator states: FULL_SYSTEM_RESET, USB_UPGRADE, SOFTWARE_DOWNLOAD_ERROR, PSU_FAILURE.
  *
  * **Test Group ID:** 02@n
- * **Test Case ID:** 005@n
+ * **Test Case ID:** 004@n
  *
  * **Test Procedure:**
  * Refer to Indicator specification documentation [indicator_L2_Low-Level_TestSpecification](../docs/pages/)
@@ -246,7 +246,7 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetMaintenanceStates)
     {
         if (!(std::find(caps.supportedStates.begin(), caps.supportedStates.end(), system_state) != caps.supportedStates.end())) 
         {
-                UT_LOG_INFO("%s state is not supported", stateToString(system_state).c_str());
+                UT_LOG_INFO("%s state is not supported", toString(system_state).c_str());
                 continue;
         }
         INDICATOR_SET(gINDICATORHandle, system_state, result);

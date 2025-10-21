@@ -52,6 +52,8 @@ declare -r RDK_HAL_TEST_DIR=${TOP}/vts_hal_test_components
 declare -r PROFILES_DIR=${TOP}/profiles
 declare -r AV_L4_TEST_DIR=${RDK_HAL_TEST_DIR}/av_l4_tests
 
+OUT_TAR_FILE=vts-Indicator.tar.gz
+
 DEF_LINUX_BINDER="`realpath ${TOP}/../`/linux_binder_idl"
 # AIDL_BIN: path of aidl compiler
 AIDL_BIN=${AIDL_BIN:-${DEF_LINUX_BINDER}/out/aidl}
@@ -77,6 +79,28 @@ fi
 declare -r AIDL_BIN=`realpath ${AIDL_BIN}`
 declare -r LINUX_BINDER_OUT_DIR=`realpath ${LINUX_BINDER_OUT_DIR}`
 
+# Parse Target argument (e.g., Target=arm or target=linux)
+# Default to 'linux' if not provided
+TARGET="linux"
+
+###############################################################################
+# Function to validate TARGET option
+###############################################################################
+for arg in "$@"; do
+    if [[ $arg == [Tt]arget=* ]]; then
+        TARGET="${arg#*=}"
+    fi
+done
+
+# Validate TARGET
+valid_targets=("linux" "arm")
+if [[ ! " ${valid_targets[@]} " =~ " ${TARGET} " ]]; then
+    echo -e "${BOLD}${RED}Invalid Target: $TARGET. Valid targets are: ${valid_targets[@]}${RESET}"
+    help
+    exit 1
+fi
+
+
 ###############################################################################
 # Function to install linux-binder service manager, headers, and libraries
 ###############################################################################
@@ -98,7 +122,7 @@ generate_hal_interfaces()
     # Clone the repository if not already present
     if [ ! -d "$RDK_HAL_DIR" ]; then
         echo "Checking out version: " $RDK_HALIF_AIDL_VERSION
-        #git clone -b $RDK_HALIF_AIDL_VERSION 'http://git@github.com/rdkcentral/rdk-halif-aidl.git' $RDK_HAL_DIR
+        git clone -b $RDK_HALIF_AIDL_VERSION 'http://git@github.com/rdkcentral/rdk-halif-aidl.git' $RDK_HAL_DIR
     fi
 
     # Iterate through the HALIF compoenents
@@ -130,16 +154,14 @@ generate_hal_interfaces()
 ###############################################################################
 build_aidl_libs()
 {
-    pushd ${AIDL_LIB_DIR}
-    make -j`nproc`
+    make -j`nproc` -C "${AIDL_LIB_DIR}" TARGET=$TARGET VARIANT=CPP
     if [ $? -ne 0 ]; then
         echo -e "${BOLD}╔══════════════════════════════════════════════╗${RESET}"
-        echo -e "${BOLD}* ${RED}Failed to build the AIDL Lib. Exiting.${RESET}       ${BOLD}*${RESET}"
+        echo -e "${BOLD}* ${RED}Failed to build the AIDL Lib. Exiting.${RESET}"
         echo -e "${BOLD}╚══════════════════════════════════════════════╝${RESET}"
         exit 1
     fi
     echo "AIDL Build completed successfully."
-    popd
 }
 
 ###############################################################################
@@ -231,7 +253,11 @@ install_test()
     install -t ${INSTALL_PATH} run.sh
 
     cp -r ${PROFILES_DIR} ${INSTALL_PATH}
-    cp -r "${TOP}/vcomponent/vcomponent_configurations" ${INSTALL_PATH}
+    cp -r "${VCOMPONENT_DIR}/vcomponent_configurations" ${INSTALL_PATH}
+
+    cd ${INSTALL_PATH}
+    tar -czf ${OUT_TAR_FILE} *
+    cd -
 }
 
 ###############################################################################
@@ -239,11 +265,13 @@ install_test()
 ###############################################################################
 clean_test()
 {
-    echo -e "${BOLD}removing *.o${RESET}"
+   echo -e "${BOLD}removing *.o${RESET}"
 
-    rm -rf test/*.o
-    rm -rf ${TOP}/vcomponent/src/*.o
-    rm -rf ${TOP}/src/*.o
+    make clean
+    make -C ${VCOMPONENT_DIR} clean
+    make -C ${AIDL_LIB_DIR} clean
+
+    rm -rf ${TOP_BUILD_DIR}/bin/${OUT_TAR_FILE}
 }
 
 ###############################################################################
@@ -288,7 +316,7 @@ elif [ "$1" == "dist_clean" ]; then
     dist_clean_test
 elif [ "$1" == "help" ]; then
     help
-elif [[ "$1" == TARGET=* ]]; then
+elif [[ "$1" == [Tt]arget=* ]]; then
     install_linux_binder
     generate_hal_interfaces
     build_aidl_libs
