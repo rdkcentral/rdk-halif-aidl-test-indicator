@@ -209,8 +209,12 @@ UT_ADD_TEST(VTS_L1_INDICATOR, set_pos)
     com::rdk::hal::indicator::Capabilities caps;
     INDICATOR_GET_CAPABILITIES(gINDICATORHandle, caps);
 
-    for(size_t i = 1; i < caps.supportedStates.size(); i++) 
+    for(size_t i = 0; i < caps.supportedStates.size(); i++) 
     {
+        if(caps.supportedStates[i] == com::rdk::hal::indicator::State::BOOT) 
+        {
+            continue;
+        }
         INDICATOR_SET(gINDICATORHandle, caps.supportedStates[i], result);
         UT_ASSERT_TRUE(result);
     }
