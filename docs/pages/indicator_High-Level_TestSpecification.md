@@ -41,7 +41,6 @@ The `HAL` supports a predefined set of states (e.g., `BOOT`, `ACTIVE`, `WPS_CONN
 
 | Test | Description | HAL APIs |
 |------|-------------|----------|
-| Get Supported Capabilities | Call `getCapabilities()` and verify returned states match the ones listed in configuration file. | `getCapabilities()` |
 | Set and Get – General States | Set and get each general state (`ACTIVE`, `STANDBY`, `OFF`, `DEEP_SLEEP`). Verify the response of `get()` matches the set state. | `set()`, `get()` |
 | Set and Get – WPS States |Set and get each WPS-related states `WPS_CONNECTING`, `WPS_CONNECTED`, `WPS_ERROR`, `WPS_SES_OVERLAP`. Verify the response of `get()` matches the set state. | `set()`, `get()` |
 | Set and Get – Network States | Set and get each  network-related states: `WIFI_ERROR`, `IP_ACQUIRED`, `NO_IP`. Verify the response of `get()` matches the set state. | `set()`, `get()` |
