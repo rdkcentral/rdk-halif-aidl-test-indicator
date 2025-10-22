@@ -97,12 +97,7 @@ using namespace com::rdk::hal;
 using namespace com::rdk::hal::indicator;
 
 extern const ut_control_keyStringMapping_t bool_mapTable_indicator[];
-extern const std::vector<std::pair<State, std::string>> stateMap;
-State stringToState(const std::string& str);
-std::string stateToString(State state);
-
-std::string vecIntToString(std::vector<int32_t>& addrs);
-std::string vecByteToHexString(const std::vector<uint8_t>& data);
+extern const ut_control_keyStringMapping_t statusIndicatorException_mapTable[];
 
 #endif //__VTS_INDICATOR_HELPER_H__
 

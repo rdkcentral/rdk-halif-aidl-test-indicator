@@ -111,12 +111,11 @@
  * | Step | Action | Input | Expected Result | Remarks |
  * |01|Call getCapabilities() API|N/A|Returns a Capabilities object|Mandatory step|
  * |02|Verify that the number of supported states matches the profile count|IIndicator.supportedStates|caps.supportedStates.size() == profile count|Ensures all configured states are returned|
- * |03|Verify each supported state from profile is present in caps.supportedStates|Profile entry string -> enum (stringToState)|All profile states exist in caps.supportedStates|Logs a mismatch if any state is missing|
+ * |03|Verify each supported state from profile is present in caps.supportedStates|Profile entry state -> string |All profile states exist in caps.supportedStates|Logs a mismatch if any state is missing|
  */
 UT_ADD_TEST(VTS_L1_INDICATOR, getCapablities_pos)
 {
     com::rdk::hal::indicator::Capabilities caps;
-    bool result = true;
     INDICATOR_GET_CAPABILITIES(gINDICATORHandle, caps);
 
     size_t supportedCount = UT_KVP_PROFILE_GET_LIST_COUNT("IIndicator.supportedStates");
@@ -140,14 +139,10 @@ UT_ADD_TEST(VTS_L1_INDICATOR, getCapablities_pos)
                 }
             }
 
-            if (!matchFound) 
-            {
-                UT_LOG_INFO("State %s mismatch in supported list\n", expectedStateStr);
-                result = false;
-            }
+            UT_ASSERT_TRUE(matchFound);
         }
     }
-    UT_ASSERT_TRUE(result);
+    
     return;
 }
 

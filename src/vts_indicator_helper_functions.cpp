@@ -70,69 +70,23 @@ const ut_control_keyStringMapping_t bool_mapTable_indicator[] =
     {NULL, -1}
 };
 
-std::string vecIntToString(std::vector<int32_t>& addrs)
+const ut_control_keyStringMapping_t statusIndicatorException_mapTable[] =
 {
-    std::string s;
-    for (size_t i = 0; i < addrs.size(); ++i)
-    {
-        s += std::to_string(addrs[i]);
-        if (i != addrs.size() - 1) s += ", ";
-    }
-    return s;
-}
-
-const std::vector<std::pair<State, std::string>> stateMap = {
-    {State::BOOT, "BOOT"},
-    {State::ACTIVE, "ACTIVE"},
-    {State::STANDBY, "STANDBY"},
-    {State::OFF, "OFF"},
-    {State::DEEP_SLEEP, "DEEP_SLEEP"},
-    {State::WPS_CONNECTING, "WPS_CONNECTING"},
-    {State::WPS_CONNECTED, "WPS_CONNECTED"},
-    {State::WPS_ERROR, "WPS_ERROR"},
-    {State::WPS_SES_OVERLAP, "WPS_SES_OVERLAP"},
-    {State::WIFI_ERROR, "WIFI_ERROR"},
-    {State::IP_ACQUIRED, "IP_ACQUIRED"},
-    {State::NO_IP, "NO_IP"},
-    {State::FULL_SYSTEM_RESET, "FULL_SYSTEM_RESET"},
-    {State::USB_UPGRADE, "USB_UPGRADE"},
-    {State::SOFTWARE_DOWNLOAD_ERROR, "SOFTWARE_DOWNLOAD_ERROR"},
-    {State::PSU_FAILURE, "PSU_FAILURE"},
-    {State::USER_DEFINED_BASE, "USER_DEFINED_BASE"},
+    {"EX_NONE",                  (int32_t) Status::EX_NONE},
+    {"EX_SECURITY",              (int32_t) Status::EX_SECURITY},
+    {"EX_BAD_PARCELABLE",        (int32_t) Status::EX_BAD_PARCELABLE},
+    {"EX_ILLEGAL_ARGUMENT",      (int32_t) Status::EX_ILLEGAL_ARGUMENT},
+    {"EX_NULL_POINTER",          (int32_t) Status::EX_NULL_POINTER},
+    {"EX_ILLEGAL_STATE",         (int32_t) Status::EX_ILLEGAL_STATE},
+    {"EX_NETWORK_MAIN_THREAD",   (int32_t) Status::EX_NETWORK_MAIN_THREAD},
+    {"EX_UNSUPPORTED_OPERATION", (int32_t) Status::EX_UNSUPPORTED_OPERATION},
+    {"EX_SERVICE_SPECIFIC",      (int32_t) Status::EX_SERVICE_SPECIFIC},
+    {"EX_PARCELABLE",            (int32_t) Status::EX_PARCELABLE},
+    {"EX_HAS_REPLY_HEADER",      (int32_t) Status::EX_HAS_REPLY_HEADER},
+    {"EX_TRANSACTION_FAILED",    (int32_t) Status::EX_TRANSACTION_FAILED},
+    {NULL, -1}
 };
 
-//Converting State to string
-std::string stateToString(State state) 
-{
-    for (const auto& [s, name] : stateMap) 
-    {
-        if (s == state) return name;
-    }
-    return "UNKNOWN_STATE";
-}
-
-// Converting string to State
-State stringToState(const std::string& str) 
-{
-    for (const auto& [s, name] : stateMap) 
-    {
-        if (name == str) return s;
-    }
-    return State::ERROR_UNKNOWN;
-}
-
-std::string vecByteToHexString(const std::vector<uint8_t>& data)
-{
-    std::ostringstream oss;
-    oss << std::uppercase << std::hex;  // uppercase hex letters
-    for (size_t i = 0; i < data.size(); ++i)
-    {
-        oss << std::setw(2) << std::setfill('0') << static_cast<int>(data[i]);
-        if (i + 1 < data.size())
-            oss << ",";
-    }
-    return oss.str();
-}
 
 /** @} */ // End of INDICATOR_HALTEST_HELPER
 /** @} */ // End of INDICATOR_HALTEST

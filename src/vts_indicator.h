@@ -77,12 +77,14 @@
  using com::rdk::hal::indicator::Capabilities;
  
  // Macro for getCapabilities
- #define INDICATOR_GET_CAPABILITIES(indicatorHandle, caps) \
+#define INDICATOR_GET_CAPABILITIES(indicatorHandle, caps) \
      do { \
          ::android::binder::Status status; \
          UT_LOG_DEBUG("Calling getCapabilities(OUT:caps[])"); \
          status = (indicatorHandle)->getCapabilities(&caps); \
-         UT_LOG_DEBUG("Result getCapabilities(OUT:caps), status:[isOK:%d, exception:%d]", status.isOk(), status.exceptionCode()); \
+         UT_LOG_DEBUG("Result getCapabilities(OUT:caps), status:[isOK:%s, exception:%s]", \
+            UT_Control_GetMapString(bool_mapTable_indicator, status.isOk()), \ 
+            UT_Control_GetMapString(statusIndicatorException_mapTable, status.exceptionCode())); \
          UT_ASSERT_TRUE(status.isOk()); \
          UT_ASSERT_EQUAL(status.exceptionCode(), ::android::binder::Status::EX_NONE); \
          UT_LOG_DEBUG("Capabilities supportedStates size: %zu", caps.supportedStates.size()); \
@@ -94,7 +96,9 @@
         ::android::binder::Status status; \
         UT_LOG_DEBUG("Calling set(IN:state[%d], OUT:result[])", state); \
         status = (indicatorHandle)->set(state, &result); \
-        UT_LOG_DEBUG("Result set(OUT:%d), status:[isOK:%d, exception:%d]", result, status.isOk(), status.exceptionCode()); \
+        UT_LOG_DEBUG("Result set(OUT:%s), status:[isOK:%s, exception:%s]", UT_Control_GetMapString(bool_mapTable_indicator, result), \
+            UT_Control_GetMapString(bool_mapTable_indicator, status.isOk()), \ 
+            UT_Control_GetMapString(statusIndicatorException_mapTable, status.exceptionCode())); \
         UT_ASSERT_TRUE(status.isOk()); \
         UT_ASSERT_EQUAL(status.exceptionCode(), ::android::binder::Status::EX_NONE); \
     } while (0)
@@ -105,10 +109,14 @@
         ::android::binder::Status status; \
         UT_LOG_DEBUG("Calling get(OUT:state[])"); \
         status = (indicatorHandle)->get(&state); \
-        UT_LOG_DEBUG("Result get(OUT:%s), status:[isOK:%d, exception:%d]", com::rdk::hal::indicator::toString(state).c_str(), status.isOk(), status.exceptionCode()); \
+        UT_LOG_DEBUG("Result get(OUT:%s), status:[isOK:%s, exception:%s]", com::rdk::hal::indicator::toString(state).c_str(), \
+            UT_Control_GetMapString(bool_mapTable_indicator, status.isOk()), \ 
+            UT_Control_GetMapString(statusIndicatorException_mapTable, status.exceptionCode())); \
+        UT_ASSERT_TRUE(status.isOk()); \
         UT_ASSERT_TRUE(status.isOk()); \
         UT_ASSERT_EQUAL(status.exceptionCode(), ::android::binder::Status::EX_NONE); \
     } while (0)
+
 
  
  /**
