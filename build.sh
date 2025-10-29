@@ -31,6 +31,7 @@ declare -r TOP=`dirname $(realpath $0)`
 declare -r HALIF_VERSION=current
 RDK_HALIF_AIDL_VERSION="${RDK_HALIF_AIDL_VERSION="main"}"
 RDK_HALIF_TEST_BASE_URL="https://github.com/rdkcentral/rdk-halif-binder-test-"
+VCOMPONENT_INDICATOR_VERSION="${VCOMPONENT_INDICATOR_VERSION="main"}"
 
 declare -A HALIF_COMPONENTS=(
   [indicator]="current"
@@ -214,7 +215,7 @@ build_vcomponent_services()
 
     pushd ${VCOMPONENT_DIR}
 
-    git checkout feature/vcomponent-indicator #Remove this line, once vcomponent PR is merged
+    git checkout ${VCOMPONENT_INDICATOR_VERSION}
     
     make -j"$(nproc)" -C "${TOP}/vcomponent" BUILD_DIR="${TOP_BUILD_DIR}" UT_CORE_DIR="${UT_CORE_DIR}"
     if [ $? -ne 0 ]; then
