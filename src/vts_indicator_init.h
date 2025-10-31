@@ -72,4 +72,4 @@
   * @} // End of INDICATOR
   * @} // End of HPK
   */
- /* End of vts_indicator.h */
+ /* End of vts_indicator_init.h */

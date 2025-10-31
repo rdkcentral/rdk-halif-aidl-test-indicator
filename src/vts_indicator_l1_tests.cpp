@@ -113,7 +113,7 @@
  * |02|Verify that the number of supported states matches the profile count|IIndicator.supportedStates|caps.supportedStates.size() == profile count|Ensures all configured states are returned|
  * |03|Verify each supported state from profile is present in caps.supportedStates|Profile entry state -> string |All profile states exist in caps.supportedStates|Logs a mismatch if any state is missing|
  */
-UT_ADD_TEST(VTS_L1_INDICATOR, getCapablities_pos)
+UT_ADD_TEST(VTS_L1_INDICATOR, getCapabilities_pos)
 {
     com::rdk::hal::indicator::Capabilities caps;
     INDICATOR_GET_CAPABILITIES(gINDICATORHandle, caps);

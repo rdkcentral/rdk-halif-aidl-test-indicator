@@ -126,7 +126,7 @@ generate_hal_interfaces()
         git clone -b $RDK_HALIF_AIDL_VERSION 'http://git@github.com/rdkcentral/rdk-halif-aidl.git' $RDK_HAL_DIR
     fi
 
-    # Iterate through the HALIF compoenents
+    # Iterate through the HALIF components
     for component in "${!HALIF_COMPONENTS[@]}"; do
         version=${HALIF_COMPONENTS[$component]}
         echo "Component: $component, Version: $version"
