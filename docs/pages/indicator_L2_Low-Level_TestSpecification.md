@@ -78,8 +78,7 @@ If user chose to run the test in interactive mode, then the test case has to be 
 None  
 
 **Dependencies :**  
-States must be supported by the platform.
-(None)
+None
 
 **User Interaction :**
 If user chose to run the test in interactive mode, then the test case has to be selected via console.
