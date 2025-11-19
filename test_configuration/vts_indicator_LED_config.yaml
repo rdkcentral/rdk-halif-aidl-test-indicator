@@ -1,0 +1,54 @@
+Indicator:
+    States:
+        ACTIVE:
+            pattern: "LED_OFF"
+            color: "none"
+        "OFF":
+            pattern: "LED_OFF"
+            color: "RED"
+        STANDBY:
+            pattern: "LED_ON"
+            color: "YELLOW"
+        DEEP_SLEEP:
+            pattern: "LED_ON"
+            color: "BLUE"
+        USB_UPGRADE:
+            pattern: "SLOW_BLINK"
+            color: "WHITE"
+            timing: "300 ms ON / 300 ms OFF"
+        FULL_SYSTEM_RESET:
+            pattern: "FAST_BLINK"
+            color: "RED"
+            timing: "200 ms ON / 200 ms OFF"
+        SOFTWARE_DOWNLOAD_ERROR:
+            pattern: "LED_ON"
+            color: "RED"
+        WPS_CONNECTING:
+            pattern: "SLOW_BREATHING"
+            color: "WHITE"
+        WPS_CONNECTED:
+            pattern: "LED_OFF"
+            color: "GREEN"
+        WPS_ERROR:
+            pattern: "FAST_BLINK"
+            color: "RED"
+            timing: "200 ms ON / 200 ms OFF"
+        WPS_SES_OVERLAP:
+            pattern: "SLOW_BLINK"
+            color: "YELLOW"
+            timing: "300 ms ON / 300 ms OFF"
+        WIFI_ERROR:
+            pattern: "FAST_BLINK"
+            color: "RED"
+            timing: "200 ms ON / 200 ms OFF"
+        IP_ACQUIRED:
+            pattern: "LED_ON"
+            color: "GREEN"
+        NO_IP:
+            pattern: "FAST_BLINK"
+            color: "RED"
+            timing: "200 ms ON / 200 ms OFF"
+        PSU_FAILURE:
+            pattern: "FAST_BLINK"
+            color: "RED"
+            timing: "200 ms ON / 200 ms OFF"

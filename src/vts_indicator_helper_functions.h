@@ -98,7 +98,7 @@ using namespace com::rdk::hal::indicator;
 
 extern const ut_control_keyStringMapping_t bool_mapTable_indicator[];
 extern const ut_control_keyStringMapping_t statusIndicatorException_mapTable[];
-
+State fromString(const std::string& str);
 #endif //__VTS_INDICATOR_HELPER_H__
 
 /** @} */ // End of INDICATOR_HALTEST_HELPER_HEADER
