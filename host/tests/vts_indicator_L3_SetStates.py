@@ -101,7 +101,7 @@ class  VTS_INDICATOR_L3_SetStates(indicatorHelperClass):
 
             self.updateTestconfigurationFile(str(state))
 
-            self.utilities.sftpCopy(self.hal_session, self.l3TestConfigFile, os.path.join(self.targetWorkspace, "test_configuration/"))
+            self.utilities.sftpCopy(self.hal_session, self.l3TestConfigFile, self.l3TestConfigFolder)
 
             self.utMenu.start()
 

@@ -96,7 +96,7 @@ static void vcomponentkvp_destroy_instance(void *instance)
 
 
 UT_status_t vts_indicator_parse_SetStates_config(char *configurationFile, const char *module, const char *testGroup,
-                                                 const char *testName, std::vector<com::rdk::hal::indicator::State> &indicator_state, int32_t* repeat)
+                                                 const char *testName, std::vector<com::rdk::hal::indicator::State> &indicator_state, uint32_t* repeat)
 {
     char resultKVP[UT_KVP_MAX_ELEMENT_SIZE] = {0};
     int32_t statesSize = 0;

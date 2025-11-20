@@ -69,6 +69,9 @@ class indicatorHelperClass(utHelperClass):
         platformConfigOnTarget = os.path.join(platformConfigOnTarget, os.path.basename(self.PlatformLEDConfigFile))
         platformConfigOnTarget = platformConfigOnTarget.replace("\\", "/")
 
+        self.l3TestConfigFolder = os.path.join(self.targetWorkspace, "test_configuration")
+        self.l3TestConfigFolder = self.l3TestConfigFolder.replace("\\", "/")
+
         self.waitTime = self.cpe.get("wait_time")
         self.device_type = self.cpe.get("device_type")
 

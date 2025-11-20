@@ -109,7 +109,7 @@ UT_ADD_TEST(VTS_L3_INDICATOR, SetStates)
     std::vector<com::rdk::hal::indicator::State> indicator_state;
     com::rdk::hal::indicator::State getState;
     bool result = false;
-    int32_t repeat = 0;
+    uint32_t repeat = 0;
 
     UT_status_t status = UT_STATUS_OK;
 
@@ -118,7 +118,7 @@ UT_ADD_TEST(VTS_L3_INDICATOR, SetStates)
 
     UT_ASSERT_EQUAL_FATAL(status, UT_STATUS_OK);
 
-    for(int32_t repeatIndex = 0; repeatIndex < repeat; repeatIndex++)
+    for(uint32_t repeatIndex = 0; repeatIndex < repeat; repeatIndex++)
     {
         for(auto &states : indicator_state)
         {
