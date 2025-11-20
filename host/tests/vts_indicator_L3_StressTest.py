@@ -106,7 +106,7 @@ class  VTS_INDICATOR_L3_StressTest(indicatorHelperClass):
         led_config = self.platformLEDConfiguration.States
 
         # First, run the stress test with all supported states
-        self.updateTestconfigurationFile("ACTIVE", supported_states, True)
+        self.updateTestconfigurationFile("", supported_states, True)
 
         self.utilities.sftpCopy(self.hal_session, self.l3TestConfigFile, self.l3TestConfigFolder)
 
