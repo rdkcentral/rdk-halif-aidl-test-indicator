@@ -50,13 +50,11 @@ class  VTS_INDICATOR_L3_SetStates(indicatorHelperClass):
         qcId = "1"
         
         super().__init__(self.testName, qcId, log)
-
-        self.vComponent_bin_path = os.path.join(self.cpe.get("target_directory"), self.moduleName, self.cpe.get("indicator_process_name"))
         
     
     def updateTestconfigurationFile(self, set_state:str):
         """
-        Updates the HDMI CEC L3 ReceiveMessage YAML configuration file.
+        Updates the Indicator L3 test YAML configuration file.
         """
         
         data = self.indicatorReadYaml(self.l3TestConfigFile)
@@ -95,7 +93,8 @@ class  VTS_INDICATOR_L3_SetStates(indicatorHelperClass):
 
             if state == "BOOT":
                 continue
-
+            
+            #Config state adjustment (It reads boolean False from YAML for OFF state)
             if state == False:
                 state = "OFF"
 

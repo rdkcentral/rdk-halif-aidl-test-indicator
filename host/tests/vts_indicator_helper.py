@@ -25,6 +25,7 @@ import os
 import sys
 import tarfile
 import yaml
+import time
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(dir_path, "../"))
@@ -104,6 +105,9 @@ class indicatorHelperClass(utHelperClass):
                 target_tarfile = target_tarfile.replace("\\", "/")
                 self.utilities.untar(self.hal_session, target_tarfile, self.targetWorkspace)
 
+        self.utilities.change_directory(self.hal_session_1, self.targetWorkspace)
+        self.hal_session_1.write(f"./{self.cpe.get('indicator_process_name')} &")
+        time.sleep(2)
     
     def indicatorReadYaml(self, yaml_path: str) -> dict:
         """
