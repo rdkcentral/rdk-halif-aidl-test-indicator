@@ -40,7 +40,7 @@ INDICATOR_L3_TEST_SUITE_NAME = "VTS_L3_INDICATOR"
 
 class  VTS_INDICATOR_L3_SetStates(indicatorHelperClass):
     """
-    Runs L3 ReceiveMessage test
+    Runs L3 Set States test
     """
     def __init__(self, log:logModule=None):
         """

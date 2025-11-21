@@ -26,7 +26,7 @@ Indicator:
     ######################################
     # Entry to run all test case
     ######################################
-    #  - name: "VTS_L1_HDMICEC"
+    #  - name: "VTS_L1_INDICATOR"
     #    test_cases:
     #      - all
     #######################################

@@ -40,7 +40,7 @@ INDICATOR_L3_TEST_SUITE_NAME = "VTS_L3_INDICATOR"
 
 class  VTS_INDICATOR_L3_StressTest(indicatorHelperClass):
     """
-    Runs L3 ReceiveMessage test
+    Runs L3 Indicator Stress test
     """
     def __init__(self, log:logModule=None):
         """
@@ -54,7 +54,7 @@ class  VTS_INDICATOR_L3_StressTest(indicatorHelperClass):
     
     def updateTestconfigurationFile(self, set_state:str, states_list:list, stress:bool):
         """
-        Updates the HDMI CEC L3 ReceiveMessage YAML configuration file.
+        Updates the Indicator L3 test YAML configuration file.
         """
 
         data = self.indicatorReadYaml(self.l3TestConfigFile)
