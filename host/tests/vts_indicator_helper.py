@@ -38,7 +38,6 @@ from raft.framework.plugins.ut_raft.utBaseUtils import utBaseUtils
 from raft.framework.plugins.ut_raft.utUserResponse import utUserResponse
 
 INDICATOR_TEST_MENU_CONFIGURATION_FILE = os.path.join(dir_path, "vts_indicator_testMenuConfiguration.yaml")
-#INDICATOR_TEST_MTK_LED_CONFIGURATION_FILE = os.path.join(dir_path, "vts_indicator_LED_config_mtk.yaml")
 INDICATOR_TESTCASES_CONFIGURATION_FILE = os.path.join(os.path.join(dir_path, "../configs"), "vts_indicator_testcase_configuration.yaml")
 INDICATOR_L3_TEST_CONFIG_FILE = os.path.join(os.path.join(dir_path, "../../test_configuration"), "vts_l3_indicator.yaml")
 

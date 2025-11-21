@@ -33,7 +33,14 @@ Indicator:
     # Entries to run individual test cases
     #######################################
     - name: "VTS_L1_INDICATOR"
-      test_cases: #yet to add L1 test cases
-        - "SetStates"
+      test_cases: 
+          - "getCapabilities_pos"
+          - "get_pos"
+          - "set_pos"
+          - "set_neg"
     - name: "VTS_L2_INDICATOR"
-      test_cases: #yet to add L2 test cases
+      test_cases:
+          - "test_l2_setgetGeneralStates"
+          - "test_l2_setgetWpsStates"
+          - "test_l2_setgetNetworkStates"
+          - "test_l2_setgetMaintenanceStates"

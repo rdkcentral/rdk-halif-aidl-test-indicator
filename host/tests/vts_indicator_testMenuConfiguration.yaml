@@ -31,11 +31,18 @@ Indicator:
         suites:
             0:
                 name: "VTS_L1_INDICATOR"
-                tests: #YET to add L1 test cases
-                    
+                tests: 
+                    - "getCapabilities_pos"
+                    - "get_pos"
+                    - "set_pos"
+                    - "set_neg"
             1:
                 name: "VTS_L2_INDICATOR"
-                tests: #YET to add L2 test cases
+                tests:
+                    - "test_l2_setgetGeneralStates"
+                    - "test_l2_setgetWpsStates"
+                    - "test_l2_setgetNetworkStates"
+                    - "test_l2_setgetMaintenanceStates"
             2:
                 name: "VTS_L3_INDICATOR"
                 tests:
