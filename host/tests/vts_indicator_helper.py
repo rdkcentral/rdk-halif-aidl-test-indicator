@@ -80,7 +80,6 @@ class indicatorHelperClass(utHelperClass):
         self.l3TestConfigFile = INDICATOR_L3_TEST_CONFIG_FILE
         self.testMenuConfiguration = ConfigRead(INDICATOR_TEST_MENU_CONFIGURATION_FILE, self.moduleName)
         self.testCaseConfiguration = ConfigRead(INDICATOR_TESTCASES_CONFIGURATION_FILE, self.moduleName)
-        #self.testCaseConfiguration = ConfigRead(INDICATOR_TEST_MTK_LED_CONFIGURATION_FILE, self.moduleName)
         self.testMenuConfiguration.test.execute = self.testMenuConfiguration.test.execute + f" -p {profileOnTarget}"
 
         # Establish HAL session

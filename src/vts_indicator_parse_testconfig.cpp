@@ -119,8 +119,11 @@ UT_status_t vts_indicator_parse_SetStates_config(char *configurationFile, const 
         for (int32_t index = 0; index < statesSize; index++)
         {
             char states[UT_KVP_MAX_ELEMENT_SIZE] = {0};
-            ut_kvp_getStringField(kvpTestInstance, (inputstatestr + "." + std::to_string(index)).c_str(),states, UT_KVP_MAX_ELEMENT_SIZE);
-            indicator_state.push_back(fromString(states));
+            ut_kvp_status_t ret = ut_kvp_getStringField(kvpTestInstance, (inputstatestr + "." + std::to_string(index)).c_str(),states, UT_KVP_MAX_ELEMENT_SIZE);
+            if (ret == UT_KVP_STATUS_SUCCESS)
+            {
+                indicator_state.push_back(fromString(states));
+            }
         }
     }
     else
