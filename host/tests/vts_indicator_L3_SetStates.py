@@ -51,26 +51,29 @@ class  VTS_INDICATOR_L3_SetStates(indicatorHelperClass):
         
         super().__init__(self.testName, qcId, log)
         
-    
-    def updateTestconfigurationFile(self, set_state:str):
-        """
-        Updates the Indicator L3 test YAML configuration file.
-        """
-        
-        data = self.indicatorReadYaml(self.l3TestConfigFile)
-        data["Indicator"]["L3"]["SetStates"]["Parameters"]["state"][0] = str(set_state)
-        
-        # write to YAML
-        self.indicatorWriteYaml(self.l3TestConfigFile, data)
 
     def testVerifyState(self, state:str, pattern:str, color:str, timing:str, manual=False):
+        """
+        Verifies the Indicator state on the device manually
+        Args:
+            state (str): The state to verify.
+            pattern (str): The expected pattern of the indicator.
+            color (str): The expected color of the indicator.
+            timing (str): The expected timing of the indicator.
+            manual (bool): If True, prompts the user for manual verification.
+        Returns:
+            bool: True if the state is verified, False otherwise.
+        """
 
-        if manual == True and timing != "none":
-            return self.testUserResponse.getUserYN(f"Is the pattern {pattern} and color {color} of the Indicator state {state} active on the device for time period {timing}? (Y/N):")
-        elif manual == True:
-            return self.testUserResponse.getUserYN(f"Is the pattern {pattern} and color {color} of the Indicator state {state} active on the device? (Y/N):")
-        else :
-            return False
+        if self.platform == "vDevice":
+            return True
+        else:
+            if manual == True and timing != "none":
+                return self.testUserResponse.getUserYN(f"Is the pattern {pattern} and color {color} of the Indicator state {state} active on the device for time period {timing}? (Y/N):")
+            elif manual == True:
+                return self.testUserResponse.getUserYN(f"Is the pattern {pattern} and color {color} of the Indicator state {state} active on the device? (Y/N):")
+            else :
+                return False
 
     def testFunction(self):
         """
@@ -91,14 +94,7 @@ class  VTS_INDICATOR_L3_SetStates(indicatorHelperClass):
         
         for state in supported_states:
 
-            if state == "BOOT":
-                continue
-            
-            #Config state adjustment (It reads boolean False from YAML for OFF state)
-            if state == False:
-                state = "OFF"
-
-            self.updateTestconfigurationFile(str(state))
+            self.updateTestconfigurationFile(state, [], False)
 
             self.utilities.sftpCopy(self.hal_session, self.l3TestConfigFile, self.l3TestConfigFolder)
 

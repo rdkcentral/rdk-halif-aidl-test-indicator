@@ -18,7 +18,7 @@ Indicator:
             timing: "300 ms ON / 300 ms OFF"
         FULL_SYSTEM_RESET:
             pattern: "FAST_BLINK"
-            color: "RED"
+            color: "RED-WHITE-YELLOW"
             timing: "200 ms ON / 200 ms OFF"
         SOFTWARE_DOWNLOAD_ERROR:
             pattern: "LED_ON"
@@ -31,7 +31,7 @@ Indicator:
             color: "GREEN"
         WPS_ERROR:
             pattern: "FAST_BLINK"
-            color: "RED"
+            color: "RED-WHITE"
             timing: "200 ms ON / 200 ms OFF"
         WPS_SES_OVERLAP:
             pattern: "SLOW_BLINK"
@@ -39,7 +39,7 @@ Indicator:
             timing: "300 ms ON / 300 ms OFF"
         WIFI_ERROR:
             pattern: "FAST_BLINK"
-            color: "RED"
+            color: "RED-WHITE"
             timing: "200 ms ON / 200 ms OFF"
         IP_ACQUIRED:
             pattern: "LED_ON"
@@ -50,5 +50,5 @@ Indicator:
             timing: "200 ms ON / 200 ms OFF"
         PSU_FAILURE:
             pattern: "FAST_BLINK"
-            color: "RED"
+            color: "RED-WHITE-YELLOW"
             timing: "200 ms ON / 200 ms OFF"

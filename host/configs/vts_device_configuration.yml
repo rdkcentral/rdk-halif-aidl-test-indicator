@@ -29,9 +29,8 @@ deviceConfig:
         soc_vendor: "intel"
         target_directory: "/tmp/"
         indicator_process_name: "VComponentIndicatorService"
-        device_type: ["TV"] # Possible values: ["TV", "RecordingDevice", "Tuner", "PlaybackDevice", "AudioSystem", "VideoProcessor", "PureCecSwitch", "Reserved"]
         prompt: "~#" # Prompt string on console
         wait_time: 240 #Configurable timeout value to limit the total duration of individual tests
         test:
             profile: "../../profiles/hfp-indicator_vcomponent.yaml" #HFP profile used to meet platform requirements
-            platform_led_config: "../../test_configuration/vts_indicator_LED_config.yaml" 
+            platform_led_config: "../../test_configuration/vts_indicator_LED_config_vdevice.yaml"

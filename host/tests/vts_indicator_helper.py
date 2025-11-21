@@ -129,6 +129,28 @@ class indicatorHelperClass(utHelperClass):
         with open(yaml_path, "w") as f:
             yaml.dump(data, f, sort_keys=False, default_flow_style=None)
 
+    def updateTestconfigurationFile(self, set_state:str, states_list:list, stress:bool):
+        """
+         Updates the Indicator L3 test YAML configuration file.
+        """
+        
+        data = self.indicatorReadYaml(self.l3TestConfigFile)
+        config_statelist = data["Indicator"]["L3"]["SetStates"]["Parameters"]["state"]
+        repeat_count = 1
+
+        if stress:
+            config_statelist.clear()
+            for states in states_list:
+                config_statelist.append(states)
+        else:
+            config_statelist.clear()
+            config_statelist.append(str(set_state))
+            data["Indicator"]["L3"]["SetStates"]["Parameters"]["repeat"] = repeat_count
+
+        # write to YAML
+        self.indicatorWriteYaml(self.l3TestConfigFile, data)
+
+
     def updateNestedDictionaries(self, original: dict, updates: dict):
         """
         Recursively updates nested dictionaries.

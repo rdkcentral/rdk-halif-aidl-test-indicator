@@ -96,7 +96,8 @@ static void vcomponentkvp_destroy_instance(void *instance)
 
 
 UT_status_t vts_indicator_parse_SetStates_config(char *configurationFile, const char *module, const char *testGroup,
-                                                 const char *testName, std::vector<com::rdk::hal::indicator::State> &indicator_state, uint32_t* repeat)
+                                                 const char *testName, std::vector<com::rdk::hal::indicator::State> &indicator_state, 
+                                                 uint32_t* repeat, uint32_t* delay)
 {
     char resultKVP[UT_KVP_MAX_ELEMENT_SIZE] = {0};
     int32_t statesSize = 0;
@@ -107,8 +108,11 @@ UT_status_t vts_indicator_parse_SetStates_config(char *configurationFile, const 
     const std::string testNode = string(module) + "." + string(testGroup) + "." + string(testName);
     const std::string inputstatestr = testNode + ".Parameters" + ".state";
     const std::string repeat_value = testNode + ".Parameters" + ".repeat";
+    const std::string delay_value = testNode + ".Parameters" + ".delay";
 
     *repeat = ut_kvp_getUInt32Field(kvpTestInstance, repeat_value.c_str());
+
+    *delay = ut_kvp_getUInt32Field(kvpTestInstance, delay_value.c_str());
 
     char states[UT_KVP_MAX_ELEMENT_SIZE] = {0};
     
@@ -135,8 +139,6 @@ UT_status_t vts_indicator_parse_SetStates_config(char *configurationFile, const 
     vcomponentkvp_destroy_instance(kvpTestInstance);
     return UT_STATUS_OK;
 }
-
-
 
 /** @} */ // End of INDICATOR_HALTEST_PARSE_TESTCONFIG
 /** @} */ // End of INDICATOR_HALTEST

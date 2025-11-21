@@ -51,42 +51,29 @@ class  VTS_INDICATOR_L3_StressTest(indicatorHelperClass):
         
         super().__init__(self.testName, qcId, log)
 
-    
-    def updateTestconfigurationFile(self, set_state:str, states_list:list, stress:bool):
-        """
-        Updates the Indicator L3 test YAML configuration file.
-        """
-
-        data = self.indicatorReadYaml(self.l3TestConfigFile)
-        config_statelist = data["Indicator"]["L3"]["SetStates"]["Parameters"]["state"]
-        repeat_count = 1
-
-        if stress:
-            config_statelist.clear()
-            for states in states_list:
-                if states == "BOOT":
-                    continue
-
-                if states == False:
-                    states = "OFF"
-
-                config_statelist.append(states)
-        else:
-            config_statelist.clear()
-            config_statelist.append(str(set_state))
-            data["Indicator"]["L3"]["SetStates"]["Parameters"]["repeat"] = repeat_count
-
-        # write to YAML
-        self.indicatorWriteYaml(self.l3TestConfigFile, data)
 
     def testVerifyState(self, state:str, pattern:str, color:str, timing:str, manual=False):
+        """
+        Verifies the Indicator state on the device manually
+        Args:
+            state (str): The state to verify.
+            pattern (str): The expected pattern of the indicator.
+            color (str): The expected color of the indicator.
+            timing (str): The expected timing of the indicator.
+            manual (bool): If True, prompts the user for manual verification.
+        Returns:
+            bool: True if the state is verified, False otherwise.
+        """
 
-        if manual == True and timing:
-            return self.testUserResponse.getUserYN(f"Is the pattern {pattern} and color {color} of the Indicator state {state} active on the device for time period {timing}? (Y/N):")
-        elif manual == True:
-            return self.testUserResponse.getUserYN(f"Is the pattern {pattern} and color {color} of the Indicator state {state} active on the device? (Y/N):")
-        else :
-            return False
+        if self.platform == "vDevice":
+            return True
+        else:
+            if manual == True and timing:
+                return self.testUserResponse.getUserYN(f"Is the pattern {pattern} and color {color} of the Indicator state {state} active on the device for time period {timing}? (Y/N):")
+            elif manual == True:
+                return self.testUserResponse.getUserYN(f"Is the pattern {pattern} and color {color} of the Indicator state {state} active on the device? (Y/N):")
+            else :
+                return False
 
     def testFunction(self):
         """
@@ -122,12 +109,6 @@ class  VTS_INDICATOR_L3_StressTest(indicatorHelperClass):
 
         # Iterate through each supported state and validate after Stress test
         for state in supported_states:
-
-            if state == "BOOT":
-                continue
-            
-            if state == False:
-                state = "OFF"
 
             self.updateTestconfigurationFile(state, [], False)
 

@@ -110,11 +110,12 @@ UT_ADD_TEST(VTS_L3_INDICATOR, SetStates)
     com::rdk::hal::indicator::State getState;
     bool result = false;
     uint32_t repeat = 0;
+    uint32_t delay = 0;
 
     UT_status_t status = UT_STATUS_OK;
 
     status = vts_indicator_parse_SetStates_config(VTS_INDICATOR_TEST_CONFIG_PATH, gModuleName, gTestGroup, testName,
-                                                  indicator_state, &repeat);
+                                                  indicator_state, &repeat, &delay);
 
     UT_ASSERT_EQUAL_FATAL(status, UT_STATUS_OK);
 
@@ -124,6 +125,8 @@ UT_ADD_TEST(VTS_L3_INDICATOR, SetStates)
         {
             INDICATOR_SET(gINDICATORHandle, states, result);
             UT_ASSERT_TRUE(result);
+
+            this_thread::sleep_for(chrono::milliseconds(delay));
 
             INDICATOR_GET(gINDICATORHandle, getState);
             UT_ASSERT_EQUAL(getState, states);

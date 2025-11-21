@@ -4,3 +4,4 @@ Indicator:
       Parameters:
         state: [ACTIVE]
         repeat: 1
+        delay: 50

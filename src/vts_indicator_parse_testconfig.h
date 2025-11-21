@@ -75,7 +75,9 @@ using namespace std;
 #define VTS_INDICATOR_TEST_CONFIG_PATH "./test_configuration/vts_l3_indicator.yaml"
 
 UT_status_t vts_indicator_parse_SetStates_config(char *configurationFile, const char *module, const char *testGroup,
-                                                 const char *testName, std::vector<com::rdk::hal::indicator::State> &indicator_state, uint32_t* repeat);
+                                                 const char *testName, std::vector<com::rdk::hal::indicator::State> &indicator_state, 
+                                                 uint32_t* repeat, uint32_t* delay);
+                                                 
 #endif //__VTS_INDICATOR_PARSE_TESTCONFIG_H__
 
 /** @} */ // End of INDICATOR_HALTEST_PARSE_TESTCONFIG_HEADER

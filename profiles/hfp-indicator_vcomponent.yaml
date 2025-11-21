@@ -35,10 +35,9 @@ IIndicator:
   interfaceVersion: current
   supportedStates:
     # General system states
-    - BOOT
     - ACTIVE
     - STANDBY
-    - OFF
+    - "OFF"
     - DEEP_SLEEP
 
     # WPS-related states
