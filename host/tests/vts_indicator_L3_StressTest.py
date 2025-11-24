@@ -25,6 +25,7 @@ import os
 import sys
 import time
 import threading
+from typing import Optional, List
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(dir_path, "../"))
@@ -52,7 +53,8 @@ class  VTS_INDICATOR_L3_StressTest(indicatorHelperClass):
         super().__init__(self.testName, qcId, log)
 
 
-    def testVerifyState(self, state:str, pattern:str, color:str, timing:str, manual=False):
+    def testVerifyState(self, state:str, pattern:str, color: Optional[List[str]] = None, timing: Optional[List[int]] = None, 
+        transition: Optional[List[str]] = None, manual=False):
         """
         Verifies the Indicator state on the device manually
         Args:
@@ -60,20 +62,34 @@ class  VTS_INDICATOR_L3_StressTest(indicatorHelperClass):
             pattern (str): The expected pattern of the indicator.
             color (str): The expected color of the indicator.
             timing (str): The expected timing of the indicator.
+            transition (str): The expected transition of the indicator.
             manual (bool): If True, prompts the user for manual verification.
         Returns:
             bool: True if the state is verified, False otherwise.
         """
 
+        color_str = ', '.join(color) if color else "none"
+        timing_str = ', '.join(map(str, timing)) if timing else "none"
+        transition_str = ', '.join(transition) if transition else "none"
+
         if self.platform == "vDevice":
             return True
-        else:
-            if manual == True and timing:
-                return self.testUserResponse.getUserYN(f"Is the pattern {pattern} and color {color} of the Indicator state {state} active on the device for time period {timing}? (Y/N):")
-            elif manual == True:
-                return self.testUserResponse.getUserYN(f"Is the pattern {pattern} and color {color} of the Indicator state {state} active on the device? (Y/N):")
-            else :
-                return False
+        
+        # Manual user verification
+        if manual:
+            if timing_str != "none" or transition_str != "none":
+                prompt = (
+                    f"Is the pattern '{pattern}' with colors [{color_str}], timing [{timing_str}] mSecs, "
+                    f"and transition for the colors [{transition_str}] of the Indicator state '{state}' active on the device? (Y/N): "
+                )
+            else:
+                prompt = (
+                    f"Is the pattern '{pattern}' with colors [{color_str}] of the Indicator state '{state}' active on the device? (Y/N): "
+                )
+            return self.testUserResponse.getUserYN(prompt)
+
+        # Default auto-fail if not manual and not vDevice
+        return False
 
     def testFunction(self):
         """
@@ -126,8 +142,9 @@ class  VTS_INDICATOR_L3_StressTest(indicatorHelperClass):
                 pattern = state_info.get("pattern")
                 color = state_info.get("color")
                 timing = state_info.get("timing")
+                transition = state_info.get("transition")
 
-                result = self.testVerifyState(state, pattern, color, timing, True)
+                result = self.testVerifyState(state, pattern, color, timing, transition, True)
                 self.log.stepResult(result, f'Test Suit: {INDICATOR_L3_TEST_SUITE_NAME} Test Case: {self.testcase}')
             else:
                 self.log.stepResult(False, f'State {state} is not present in platform config unable to validate')

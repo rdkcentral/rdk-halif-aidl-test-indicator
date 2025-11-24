@@ -2,53 +2,56 @@ Indicator:
     States:
         ACTIVE:
             pattern: "LED_OFF"
-            color: "none"
+            color: []
         "OFF":
             pattern: "LED_OFF"
-            color: "RED"
+            color: [RED]
         STANDBY:
             pattern: "LED_ON"
-            color: "YELLOW"
+            color: [YELLOW]
         DEEP_SLEEP:
             pattern: "LED_ON"
-            color: "BLUE"
+            color: [BLUE]
         USB_UPGRADE:
             pattern: "SLOW_BLINK"
-            color: "WHITE"
-            timing: "300 ms ON / 300 ms OFF"
+            color: [WHITE]
+            timing: [300, 300] # duration for ON and OFF state in msec
         FULL_SYSTEM_RESET:
             pattern: "FAST_BLINK"
-            color: "RED-WHITE-YELLOW"
-            timing: "200 ms ON / 200 ms OFF"
+            color: [RED, WHITE, YELLOW]
+            timing: [200, 200, 100] #in msec
         SOFTWARE_DOWNLOAD_ERROR:
             pattern: "LED_ON"
-            color: "RED"
+            color: [RED]
         WPS_CONNECTING:
             pattern: "SLOW_BREATHING"
-            color: "WHITE"
+            color: [WHITE]
+            timing: [500, 500] # duration for ON and OFF state in msec
         WPS_CONNECTED:
             pattern: "LED_OFF"
-            color: "GREEN"
+            color: [GREEN]
         WPS_ERROR:
             pattern: "FAST_BLINK"
-            color: "RED-WHITE"
-            timing: "200 ms ON / 200 ms OFF"
+            color: [RED, WHITE]
+            timing: [200, 200]
         WPS_SES_OVERLAP:
             pattern: "SLOW_BLINK"
-            color: "YELLOW"
-            timing: "300 ms ON / 300 ms OFF"
+            color: [YELLOW]
+            timing: [300, 300] # duration for ON and OFF state in msec
         WIFI_ERROR:
             pattern: "FAST_BLINK"
-            color: "RED-WHITE"
-            timing: "200 ms ON / 200 ms OFF"
+            color: [RED, WHITE]
+            timing: [200, 200]
+            transition: ["FADE_OUT"]
         IP_ACQUIRED:
             pattern: "LED_ON"
-            color: "GREEN"
+            color: [GREEN]
         NO_IP:
             pattern: "FAST_BLINK"
-            color: "RED"
-            timing: "200 ms ON / 200 ms OFF"
+            color: [RED]
+            timing: [200, 200]
         PSU_FAILURE:
             pattern: "FAST_BLINK"
-            color: "RED-WHITE-YELLOW"
-            timing: "200 ms ON / 200 ms OFF"
+            color: [RED, WHITE, YELLOW]
+            timing: [200, 200, 100] #in msec
+            transition: ["FADE_OUT"]

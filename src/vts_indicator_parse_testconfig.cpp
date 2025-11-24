@@ -113,8 +113,6 @@ UT_status_t vts_indicator_parse_SetStates_config(char *configurationFile, const 
     *repeat = ut_kvp_getUInt32Field(kvpTestInstance, repeat_value.c_str());
 
     *delay = ut_kvp_getUInt32Field(kvpTestInstance, delay_value.c_str());
-
-    char states[UT_KVP_MAX_ELEMENT_SIZE] = {0};
     
     statesSize = ut_kvp_getListCount(kvpTestInstance, inputstatestr.c_str());
 
