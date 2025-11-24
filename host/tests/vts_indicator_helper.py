@@ -74,6 +74,7 @@ class indicatorHelperClass(utHelperClass):
 
         self.waitTime = self.cpe.get("wait_time")
         self.device_type = self.cpe.get("device_type")
+        self.platform = self.cpe.get("platform")
 
         # Load test menu and test case configuration files
         self.l3TestConfigFile = INDICATOR_L3_TEST_CONFIG_FILE
