@@ -63,8 +63,8 @@ flowchart TD
     CopyBinaries --> LoopStates{For each supported state}
     LoopStates --> ApplyState[Set indicator state]
     ApplyState --> Delay[Wait for delay ms]
-    Delay --> GetCheck[Check state using get() method]
-    GetCheck --> Compare[Compare returned state with expected]
+    Delay --> GetCheck[Check state using get method]
+    GetCheck --> Compare[Compare returned state with<br/>expected state]
     Compare -->|Mismatch| TestFail([Test Failed])
     Compare --> ManualCheck[Perform manual LED/pattern verification<br/>Provide Y/N]
     ManualCheck -->|No| TestFail
@@ -129,17 +129,17 @@ Validates the robustness of the Indicator HAL by continuously toggling the indic
 flowchart TD
     Start([Start StressTest]) --> CopyBinaries[Copy VTS binaries to DUT]
     CopyBinaries --> LoopRepeat{Iteration <= repeat_count?}
-    LoopRepeat -->|Yes| LoopStates{For each target state in [ON, OFF, BLINK]}
-    LoopStates --> SetState[Set indicator to target state]
-    SetState --> Delay[Wait delay_between_states ms]
-    Delay --> GetCheck[Validate current state via HAL get() API]
+    LoopRepeat -->|Yes| LoopStates{For each target state}
+    LoopStates --> SetState[Set indicator to<br/>target state]
+    SetState --> Delay[Wait delay_between_states<br/>ms]
+    Delay --> GetCheck[Validate current state<br/>via HAL get API]
     GetCheck --> LogMismatch[Log mismatch/failure if any]
     LogMismatch --> LoopStates
     LoopStates -->|All states completed| LoopRepeat
     LoopRepeat -->|No| PostValidation[Post-Loop Validation]
-    PostValidation --> FinalGet[Perform final state verification via HAL get() API]
-    FinalGet --> ManualCheck[Manual LED/pattern verification on DUT (Y/N)]
-    ManualCheck --> ErrorCheck[Ensure no system errors, crashes, or HAL failures occurred]
+    PostValidation --> FinalGet[Perform final state verification<br/>via HAL get API]
+    FinalGet --> ManualCheck[Manual LED/pattern<br/>verification on DUT Y/N]
+    ManualCheck --> ErrorCheck[Ensure no system errors,<br/>crashes, or HAL<br/>failures occurred]
     ErrorCheck --> TestPass([Test Passed])
     LogMismatch -->|Critical failure| TestFail([Test Failed])
     ManualCheck -->|Fail| TestFail
