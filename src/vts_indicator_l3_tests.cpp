@@ -84,7 +84,7 @@ public:
 };
 
 /**
- * @brief
+ * @brief Test Case to validate functionality of Set and Get Indicator States
  *
  *
  * **Test Group ID:** Basic: 03@n
