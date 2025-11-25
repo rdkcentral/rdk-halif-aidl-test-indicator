@@ -100,6 +100,7 @@ class  VTS_INDICATOR_L3_SetStates(indicatorHelperClass):
         """
         self.utilities.change_directory(self.hal_session, self.targetWorkspace)
         results = False
+        result = False
         self.testcase = "SetStates"
         
         self.profileConfiguration = ConfigRead(self.moduleHFPFile, self.profile_moduleName)
@@ -134,7 +135,7 @@ class  VTS_INDICATOR_L3_SetStates(indicatorHelperClass):
                 result = self.testVerifyState(state, pattern, color, timing, transition, True)
                 self.log.stepResult(result, f'Test Suit: {INDICATOR_L3_TEST_SUITE_NAME} Test Case: {self.testcase}')
             else:
-                self.log.stepResult(False, f'State {state} is not present in platform config unable to validate')
+                self.log.stepResult(result, f'State {state} is not present in platform config unable to validate')
 
         return result
 
