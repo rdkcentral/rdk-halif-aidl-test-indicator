@@ -87,6 +87,16 @@ const ut_control_keyStringMapping_t statusIndicatorException_mapTable[] =
     {NULL, -1}
 };
 
+State fromString(const std::string& str) 
+{
+    for (State val : ::android::internal::enum_values<State>) {
+        if (toString(val) == str) {
+            return val;
+        }
+    }
+    UT_LOG_ERROR("invalid State string %s", str.c_str());
+    return State::ERROR_UNKNOWN;
+}
 
 /** @} */ // End of INDICATOR_HALTEST_HELPER
 /** @} */ // End of INDICATOR_HALTEST
