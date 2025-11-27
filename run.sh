@@ -20,7 +20,7 @@
 #* ******************************************************************************
 
 RUN_DIR=$(realpath "$(dirname "$0")")
-VCOMPONENT_SERVICE_NAME=VComponentIndicatorService
+VCOMPONENT_SERVICE_NAME=Vendor-Indicator
 VCOMPONENT_CONFIG_PATH=${RUN_DIR}/vcomponent_configurations/indicator_vcomponent_configuration.yaml
 # Function to check if a process is running
 check_process()
