@@ -199,7 +199,7 @@ deviceConfig:
         model:      "VTV"
         soc_vendor: "intel"
         target_directory: "/tmp/"
-        indicator_process_name: "VComponentIndicatorService"
+        indicator_process_name: "Vendor-Indicator"
         prompt: "~#" # Prompt string on console
         wait_time: 240 #Configurable timeout value to limit the total duration of individual tests
         test:
