@@ -43,14 +43,14 @@ class  VTS_INDICATOR_L3_StressTest(indicatorHelperClass):
     """
     Runs L3 Indicator Stress test
     """
-    def __init__(self, log:logModule=None):
+    def __init__(self, log:logModule=None, hfpfile:str=None, ledConfig:str=None, testMenuConfigFile=None, moduleName=None, artifactDirPath=None):
         """
         Initializes the test class
         """
         self.testName = "Indicator_L3_StressTest"
         qcId = "2"
         
-        super().__init__(self.testName, qcId, log)
+        super().__init__(self.testName, qcId, log, hfpfile, ledConfig, testMenuConfigFile, moduleName, artifactDirPath)
 
 
     def testVerifyState(self, state:str, pattern:str, color: Optional[List[str]] = None, timing: Optional[List[int]] = None, 
@@ -106,7 +106,7 @@ class  VTS_INDICATOR_L3_StressTest(indicatorHelperClass):
         self.profileConfiguration = ConfigRead(self.moduleHFPFile, self.profile_moduleName)
         supported_states = self.profileConfiguration.supportedStates
 
-        self.platformLEDConfiguration = ConfigRead(self.PlatformLEDConfigFile, self.moduleName)
+        self.platformLEDConfiguration = ConfigRead(self.moduleLEDConfigFile, "Indicator")
         led_config = self.platformLEDConfiguration.States
 
         # First, run the stress test with all supported states
