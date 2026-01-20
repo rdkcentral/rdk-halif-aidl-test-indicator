@@ -74,7 +74,7 @@ class indicatorHelperClass(utHelperClass):
         self.moduleHFPFile = os.path.join(dir_path, profilefile_tmp)
         self.moduleLEDConfigFile = os.path.join(dir_path, ledConfig_tmp)
 
-        if (self.moduleName == "VTS"):
+        if self.moduleName == "VTS":
             # profileOnTarget for unifiedVTS is the one available in profiles path of unifiedVTS repo
             profileOnTarget = os.path.join(self.targetWorkspace, "bin", "profiles")
             ledOnTarget = os.path.join(self.targetWorkspace, "bin", "platform_led_config")
@@ -102,12 +102,12 @@ class indicatorHelperClass(utHelperClass):
             indicatorTestMenuConfigFile = INDICATOR_TEST_MENU_CONFIGURATION_FILE
 
         self.testMenuConfiguration = ConfigRead(indicatorTestMenuConfigFile, self.moduleName)
-        if (self.moduleName != "VTS"):
+        if self.moduleName != "VTS":
             self.testCaseConfiguration = ConfigRead(INDICATOR_TESTCASES_CONFIGURATION_FILE, self.moduleName) # Only needed while running individual tests
         
         self.testMenuConfiguration.test.execute = self.testMenuConfiguration.test.execute + f" -p {profileOnTarget}"
 
-        if (self.moduleName == "VTS"):
+        if self.moduleName == "VTS":
             self.l3TestConfigFolder = os.path.join(self.targetWorkspace, "bin", "test_configuration")
         else:
             self.l3TestConfigFolder = os.path.join(self.targetWorkspace, "test_configuration")
@@ -147,12 +147,12 @@ class indicatorHelperClass(utHelperClass):
                 target_tarfile = target_tarfile.replace("\\", "/")
                 self.utilities.untar(self.hal_session, target_tarfile, self.targetWorkspace)
             
-        if (self.moduleName == "VTS"):
+        if self.moduleName == "VTS":
             #unified VTS repo target workspace needs a /bin/ after module name
             self.targetWorkspace = os.path.join(self.targetWorkspace, "bin")
             self.targetWorkspace = self.targetWorkspace.replace("\\", "/")
 
-        if (self.moduleName != "VTS"):
+        if self.moduleName != "VTS":
             self.utilities.change_directory(self.hal_session_1, self.targetWorkspace)
             self.hal_session_1.write(f"./{self.cpe.get('indicator_process_name')} &")
             time.sleep(2)
