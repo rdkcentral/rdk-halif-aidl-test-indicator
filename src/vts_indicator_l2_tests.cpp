@@ -62,10 +62,10 @@
 
 #include "vts_indicator.h"
 #include "com/rdk/hal/indicator/IIndicator.h"
+#include "com/rdk/hal/indicator/IIndicatorManager.h"
 #include "ut_log.h"
-#include "com/rdk/hal/indicator/State.h"
 
-extern sp<IIndicator> gINDICATORHandle;
+extern sp<IIndicatorManager> gINDICATORHandle;
 
 /* Test class registration with UT_Core */
 UT_ADD_TEST_TO_GROUP(VTS_L2_INDICATOR, UT_TESTS_L2)
@@ -87,176 +87,159 @@ public:
     }
 };
 
-
-/**
- * @brief Test for set() and get() functions of IIndicator interface for General states
- *
- * This test verifies that the set() and get() methods of the IIndicator interface
- * can set and get the general indicator states: ACTIVE, STANDBY, OFF, DEEP_SLEEP.
- *
- * **Test Group ID:** 02@n
- * **Test Case ID:** 001@n
- *
- * **Test Procedure:**
- * Refer to Indicator specification documentation [indicator_L2_Low-Level_TestSpecification](../docs/pages/)
- */
 UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetGeneralStates)
 {
-    com::rdk::hal::indicator::Capabilities caps;
-    com::rdk::hal::indicator::State getState;
-    bool result = false;
-    
-    INDICATOR_GET_CAPABILITIES(gINDICATORHandle, caps);
+    std::vector<com::rdk::hal::indicator::IIndicator::Id> ids;
+    INDICATOR_GET_INDICATORIDS(gINDICATORHandle, ids);
 
-    std::vector<com::rdk::hal::indicator::State> generalStates = {
-        com::rdk::hal::indicator::State::ACTIVE,
-        com::rdk::hal::indicator::State::STANDBY,
-        com::rdk::hal::indicator::State::OFF,
-        com::rdk::hal::indicator::State::DEEP_SLEEP
+    std::vector<android::String16> generalStates = {
+        android::String16("ACTIVE"),
+        android::String16("STANDBY"),
+        android::String16("OFF"),
+        android::String16("DEEP_SLEEP")
     };
-    
-    for (const auto& general_state : generalStates) 
+
+    for (const auto& id : ids)
     {
-        if (!(std::find(caps.supportedStates.begin(), caps.supportedStates.end(), general_state) != caps.supportedStates.end())) 
+        android::sp<com::rdk::hal::indicator::IIndicator> indicator;
+        INDICATOR_GET_INDICATOR(gINDICATORHandle, id, indicator);
+
+        com::rdk::hal::indicator::Capabilities caps;
+        INDICATOR_GET_CAPS(indicator, caps);
+
+        for (const auto& state : generalStates)
         {
-                UT_LOG_INFO("%s state is not supported", toString(general_state).c_str());
+            if (std::find(caps.supportedStates.begin(), caps.supportedStates.end(), state) == caps.supportedStates.end())
+            {
+                UT_LOG_INFO("%s state not supported for ID=%d", android::String8(state).string(), id.value);
                 continue;
+            }
+
+            // Set state POS
+            INDICATOR_SET_STATE_POS(indicator, state);
+
+            // Get state POS
+            android::String16 getState;
+            INDICATOR_GET_STATE_POS(indicator, getState);
+
+            UT_ASSERT_EQUAL(getState, state);
         }
-        INDICATOR_SET(gINDICATORHandle, general_state, result);
-        UT_ASSERT_TRUE(result);
-        INDICATOR_GET(gINDICATORHandle, getState);
-        UT_ASSERT_EQUAL(getState, general_state);
     }
-    
-    return;
 }
 
-/**
- * @brief Test for set() and get() functions of IIndicator interface for WPS states
- *
- * This test verifies that the set() and get() methods of the IIndicator interface
- * can set and get the WPS indicator states: WPS_CONNECTING, WPS_CONNECTED, WPS_ERROR, WPS_SES_OVERLAP.
- *
- * **Test Group ID:** 02@n
- * **Test Case ID:** 002@n
- *
- * **Test Procedure:**
- * Refer to Indicator specification documentation [indicator_L2_Low-Level_TestSpecification](../docs/pages/)
- */
 UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetWpsStates)
 {
-    com::rdk::hal::indicator::Capabilities caps;
-    com::rdk::hal::indicator::State getState;
-    bool result = false;
-    
-    INDICATOR_GET_CAPABILITIES(gINDICATORHandle, caps);
+    std::vector<com::rdk::hal::indicator::IIndicator::Id> ids;
+    INDICATOR_GET_INDICATORIDS(gINDICATORHandle, ids);
 
-    std::vector<com::rdk::hal::indicator::State> wpsStates = {
-        com::rdk::hal::indicator::State::WPS_CONNECTING,
-        com::rdk::hal::indicator::State::WPS_CONNECTED,
-        com::rdk::hal::indicator::State::WPS_ERROR,
-        com::rdk::hal::indicator::State::WPS_SES_OVERLAP
+    std::vector<android::String16> wpsStates = {
+        android::String16("WPS_CONNECTING"),
+        android::String16("WPS_CONNECTED"),
+        android::String16("WPS_ERROR"),
+        android::String16("WPS_SES_OVERLAP")
     };
 
-    for (const auto& wps_state : wpsStates) 
+    for (const auto& id : ids)
     {
-        if (!(std::find(caps.supportedStates.begin(), caps.supportedStates.end(), wps_state) != caps.supportedStates.end())) 
-        {
-                UT_LOG_INFO("%s state is not supported", toString(wps_state).c_str());
-                continue;
-        }
-        INDICATOR_SET(gINDICATORHandle, wps_state, result);
-        UT_ASSERT_TRUE(result);
-        INDICATOR_GET(gINDICATORHandle, getState);
-        UT_ASSERT_EQUAL(getState, wps_state);
-    }
+        android::sp<com::rdk::hal::indicator::IIndicator> indicator;
+        INDICATOR_GET_INDICATOR(gINDICATORHandle, id, indicator);
 
-    return;
+        com::rdk::hal::indicator::Capabilities caps;
+        INDICATOR_GET_CAPS(indicator, caps);
+
+        for (const auto& state : wpsStates)
+        {
+            if (std::find(caps.supportedStates.begin(), caps.supportedStates.end(), state) == caps.supportedStates.end())
+            {
+                UT_LOG_INFO("%s state not supported for ID=%d", android::String8(state).string(), id.value);
+                continue;
+            }
+
+            INDICATOR_SET_STATE_POS(indicator, state);
+
+            android::String16 getState;
+            INDICATOR_GET_STATE_POS(indicator, getState);
+
+            UT_ASSERT_EQUAL(getState, state);
+        }
+    }
 }
 
-/**
- * @brief Test for set() and get() functions of IIndicator interface for Network states
- *
- * This test verifies that the set() and get() methods of the IIndicator interface
- * can set and get the Network indicator states: WIFI_ERROR, IP_ACQUIRED, NO_IP.
- *
- * **Test Group ID:** 02@n
- * **Test Case ID:** 003@n
- *
- * **Test Procedure:**
- * Refer to Indicator specification documentation [indicator_L2_Low-Level_TestSpecification](../docs/pages/)
- */
 UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetNetworkStates)
 {
-    com::rdk::hal::indicator::Capabilities caps;
-    com::rdk::hal::indicator::State getState;
-    bool result = false;
-    
-    INDICATOR_GET_CAPABILITIES(gINDICATORHandle, caps);
+    std::vector<com::rdk::hal::indicator::IIndicator::Id> ids;
+    INDICATOR_GET_INDICATORIDS(gINDICATORHandle, ids);
 
-    std::vector<com::rdk::hal::indicator::State> networkStates = {
-        com::rdk::hal::indicator::State::WIFI_ERROR,
-        com::rdk::hal::indicator::State::IP_ACQUIRED,
-        com::rdk::hal::indicator::State::NO_IP
+    std::vector<android::String16> networkStates = {
+        android::String16("WIFI_ERROR"),
+        android::String16("IP_ACQUIRED"),
+        android::String16("NO_IP")
     };
 
-    for (const auto& network_state : networkStates) 
+    for (const auto& id : ids)
     {
-        if (!(std::find(caps.supportedStates.begin(), caps.supportedStates.end(), network_state) != caps.supportedStates.end())) 
-        {
-                UT_LOG_INFO("%s state is not supported", toString(network_state).c_str());
-                continue;
-        }
-        INDICATOR_SET(gINDICATORHandle, network_state, result);
-        UT_ASSERT_TRUE(result);
-        INDICATOR_GET(gINDICATORHandle, getState);
-        UT_ASSERT_EQUAL(getState, network_state);
-    }
+        android::sp<com::rdk::hal::indicator::IIndicator> indicator;
+        INDICATOR_GET_INDICATOR(gINDICATORHandle, id, indicator);
 
-    return;
+        com::rdk::hal::indicator::Capabilities caps;
+        INDICATOR_GET_CAPS(indicator, caps);
+
+        for (const auto& state : networkStates)
+        {
+            if (std::find(caps.supportedStates.begin(), caps.supportedStates.end(), state) == caps.supportedStates.end())
+            {
+                UT_LOG_INFO("%s state not supported for ID=%d", android::String8(state).string(), id.value);
+                continue;
+            }
+
+            INDICATOR_SET_STATE_POS(indicator, state);
+
+            android::String16 getState;
+            INDICATOR_GET_STATE_POS(indicator, getState);
+
+            UT_ASSERT_EQUAL(getState, state);
+        }
+    }
 }
 
-/**
- * @brief Test for set() and get() functions of IIndicator interface for System Maintenance states
- *
- * This test verifies that the set() and get() methods of the IIndicator interface
- * can set and get the Maintenance indicator states: FULL_SYSTEM_RESET, USB_UPGRADE, SOFTWARE_DOWNLOAD_ERROR, PSU_FAILURE.
- *
- * **Test Group ID:** 02@n
- * **Test Case ID:** 004@n
- *
- * **Test Procedure:**
- * Refer to Indicator specification documentation [indicator_L2_Low-Level_TestSpecification](../docs/pages/)
- */
 UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetMaintenanceStates)
 {
-    com::rdk::hal::indicator::Capabilities caps;
-    com::rdk::hal::indicator::State getState;
-    bool result = false;
-    
-    INDICATOR_GET_CAPABILITIES(gINDICATORHandle, caps);
+    std::vector<com::rdk::hal::indicator::IIndicator::Id> ids;
+    INDICATOR_GET_INDICATORIDS(gINDICATORHandle, ids);
 
-    std::vector<com::rdk::hal::indicator::State> maintenanceStates = {
-        com::rdk::hal::indicator::State::FULL_SYSTEM_RESET,
-        com::rdk::hal::indicator::State::USB_UPGRADE,
-        com::rdk::hal::indicator::State::SOFTWARE_DOWNLOAD_ERROR,
-        com::rdk::hal::indicator::State::PSU_FAILURE
+    std::vector<android::String16> maintenanceStates = {
+        android::String16("FULL_SYSTEM_RESET"),
+        android::String16("USB_UPGRADE"),
+        android::String16("SOFTWARE_DOWNLOAD_ERROR"),
+        android::String16("PSU_FAILURE")
     };
-    for (const auto& system_state : maintenanceStates) 
+
+    for (const auto& id : ids)
     {
-        if (!(std::find(caps.supportedStates.begin(), caps.supportedStates.end(), system_state) != caps.supportedStates.end())) 
+        android::sp<com::rdk::hal::indicator::IIndicator> indicator;
+        INDICATOR_GET_INDICATOR(gINDICATORHandle, id, indicator);
+
+        com::rdk::hal::indicator::Capabilities caps;
+        INDICATOR_GET_CAPS(indicator, caps);
+
+        for (const auto& state : maintenanceStates)
         {
-                UT_LOG_INFO("%s state is not supported", toString(system_state).c_str());
+            if (std::find(caps.supportedStates.begin(), caps.supportedStates.end(), state) == caps.supportedStates.end())
+            {
+                UT_LOG_INFO("%s state not supported for ID=%d", android::String8(state).string(), id.value);
                 continue;
+            }
+
+            INDICATOR_SET_STATE_POS(indicator, state);
+
+            android::String16 getState;
+            INDICATOR_GET_STATE_POS(indicator, getState);
+
+            UT_ASSERT_EQUAL(getState, state);
         }
-        INDICATOR_SET(gINDICATORHandle, system_state, result);
-        UT_ASSERT_TRUE(result);
-        INDICATOR_GET(gINDICATORHandle, getState);
-        UT_ASSERT_EQUAL(getState, system_state);
     }
-    
-    return;
 }
+
 
 /**
 * @} // End of INDICATOR_HALTEST_CLASS
