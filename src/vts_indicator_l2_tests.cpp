@@ -87,6 +87,35 @@ public:
     }
 };
 
+/**
+ * @brief Validates set() and get() for General indicator states.
+ *
+ * This test ensures that:
+ * - All General states (ACTIVE, STANDBY, OFF, DEEP_SLEEP) can be set and retrieved.
+ * - Only supported states defined in the capabilities are tested.
+ *
+ * **Test Group ID:** 02@n
+ * **Test Case ID:** 001@n
+ * **Priority:** High@n
+ *
+ * **Pre-Conditions:**@n
+ * - Indicator HAL must be initialized and gINDICATORHandle must be valid@n
+ * - Supported states must be configured in the profile@n
+ *
+ * **Dependencies:**@n
+ * - getIndicatorIds() and getIndicator() must work correctly@n
+ *
+ * **User Interaction:** None@n
+ *
+ * **Test Procedure:**@n
+ * | Step | Action | Input | Expected Result | Remarks |
+ * |01|Call getIndicatorIds()|N/A|Returns list of IDs|Mandatory step|
+ * |02|Retrieve each indicator instance|ID from step 1|Non-null IIndicator object|Mandatory step|
+ * |03|Call getCapabilities()|Indicator object|Obtain supported states|Mandatory step|
+ * |04|For each General state|Supported state|Call set() and get()|Set and verify state only if supported|
+ * |05|Assert returned state matches set state|get() result|Equal to set state|Logs unsupported states|
+ */
+
 UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetGeneralStates)
 {
     std::vector<com::rdk::hal::indicator::IIndicator::Id> ids;
@@ -127,6 +156,35 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetGeneralStates)
     }
 }
 
+/**
+ * @brief Validates set() and get() for WPS indicator states.
+ *
+ * This test ensures that:
+ * - WPS states (WPS_CONNECTING, WPS_CONNECTED, WPS_ERROR, WPS_SES_OVERLAP) can be set and retrieved.
+ * - Only supported states defined in capabilities are tested.
+ *
+ * **Test Group ID:** 02@n
+ * **Test Case ID:** 002@n
+ * **Priority:** High@n
+ *
+ * **Pre-Conditions:**@n
+ * - Indicator HAL must be initialized and gINDICATORHandle must be valid@n
+ * - Supported states must be configured in the profile@n
+ *
+ * **Dependencies:**@n
+ * - getIndicatorIds() and getIndicator() must work correctly@n
+ *
+ * **User Interaction:** None@n
+ *
+ * **Test Procedure:**@n
+ * | Step | Action | Input | Expected Result | Remarks |
+ * |01|Call getIndicatorIds()|N/A|Returns list of IDs|Mandatory step|
+ * |02|Retrieve each indicator instance|ID from step 1|Non-null IIndicator object|Mandatory step|
+ * |03|Call getCapabilities()|Indicator object|Obtain supported states|Mandatory step|
+ * |04|For each WPS state|Supported state|Call set() and get()|Set and verify state only if supported|
+ * |05|Assert returned state matches set state|get() result|Equal to set state|Logs unsupported states|
+ */
+
 UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetWpsStates)
 {
     std::vector<com::rdk::hal::indicator::IIndicator::Id> ids;
@@ -165,6 +223,35 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetWpsStates)
     }
 }
 
+/**
+ * @brief Validates set() and get() for Network indicator states.
+ *
+ * This test ensures that:
+ * - Network states (WIFI_ERROR, IP_ACQUIRED, NO_IP) can be set and retrieved.
+ * - Only supported states defined in capabilities are tested.
+ *
+ * **Test Group ID:** 02@n
+ * **Test Case ID:** 003@n
+ * **Priority:** High@n
+ *
+ * **Pre-Conditions:**@n
+ * - Indicator HAL must be initialized and gINDICATORHandle must be valid@n
+ * - Supported states must be configured in the profile@n
+ *
+ * **Dependencies:**@n
+ * - getIndicatorIds() and getIndicator() must work correctly@n
+ *
+ * **User Interaction:** None@n
+ *
+ * **Test Procedure:**@n
+ * | Step | Action | Input | Expected Result | Remarks |
+ * |01|Call getIndicatorIds()|N/A|Returns list of IDs|Mandatory step|
+ * |02|Retrieve each indicator instance|ID from step 1|Non-null IIndicator object|Mandatory step|
+ * |03|Call getCapabilities()|Indicator object|Obtain supported states|Mandatory step|
+ * |04|For each Network state|Supported state|Call set() and get()|Set and verify state only if supported|
+ * |05|Assert returned state matches set state|get() result|Equal to set state|Logs unsupported states|
+ */
+
 UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetNetworkStates)
 {
     std::vector<com::rdk::hal::indicator::IIndicator::Id> ids;
@@ -202,6 +289,34 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetNetworkStates)
     }
 }
 
+/**
+ * @brief Validates set() and get() for System Maintenance indicator states.
+ *
+ * This test ensures that:
+ * - Maintenance states (FULL_SYSTEM_RESET, USB_UPGRADE, SOFTWARE_DOWNLOAD_ERROR, PSU_FAILURE) can be set and retrieved.
+ * - Only supported states defined in capabilities are tested.
+ *
+ * **Test Group ID:** 02@n
+ * **Test Case ID:** 004@n
+ * **Priority:** High@n
+ *
+ * **Pre-Conditions:**@n
+ * - Indicator HAL must be initialized and gINDICATORHandle must be valid@n
+ * - Supported states must be configured in the profile@n
+ *
+ * **Dependencies:**@n
+ * - getIndicatorIds() and getIndicator() must work correctly@n
+ *
+ * **User Interaction:** None@n
+ *
+ * **Test Procedure:**@n
+ * | Step | Action | Input | Expected Result | Remarks |
+ * |01|Call getIndicatorIds()|N/A|Returns list of IDs|Mandatory step|
+ * |02|Retrieve each indicator instance|ID from step 1|Non-null IIndicator object|Mandatory step|
+ * |03|Call getCapabilities()|Indicator object|Obtain supported states|Mandatory step|
+ * |04|For each Maintenance state|Supported state|Call set() and get()|Set and verify state only if supported|
+ * |05|Assert returned state matches set state|get() result|Equal to set state|Logs unsupported states|
+ */
 UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetMaintenanceStates)
 {
     std::vector<com::rdk::hal::indicator::IIndicator::Id> ids;

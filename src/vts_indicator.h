@@ -69,7 +69,7 @@
  #include <chrono>
  #include <thread>
  #include <com/rdk/hal/indicator/BpIndicator.h>
- #include <com/rdk/hal/indicator/BpIndicatorManager.h> 
+ #include <com/rdk/hal/indicator/BpIndicatorManager.h> //Karthi
  #include <com/rdk/hal/indicator/Capabilities.h>
  #include <utils/String16.h>
  #include "vts_indicator_helper_functions.h"
@@ -77,7 +77,7 @@
  using android::sp;
  using android::String8;
  using com::rdk::hal::indicator::IIndicator;
- using com::rdk::hal::indicator::IIndicatorManager;
+ using com::rdk::hal::indicator::IIndicatorManager; //Karthi
  using com::rdk::hal::indicator::Capabilities;
 
 #define INDICATOR_GET_INDICATORIDS(indicatorHandle, indicatorIds) \
@@ -93,24 +93,53 @@
          UT_LOG_DEBUG("IndicatorIds size %zu", indicatorIds.size()); \
      } while (0)
 
+#define INDICATOR_GET_INDICATORIDS_NEG(indicatorHandle, expectedException) \
+    do { \
+        ::android::binder::Status status; \
+        std::vector<com::rdk::hal::indicator::IIndicator::Id> indicatorIds; \
+        UT_LOG_DEBUG("Calling getIndicatorIds NEGATIVE case"); \
+        status = (indicatorHandle)->getIndicatorIds(nullptr); \
+        UT_LOG_DEBUG("Result getIndicatorIds NEG, status:[isOK:%s, exception:%s]", \
+            UT_Control_GetMapString(bool_mapTable_indicator, status.isOk()), \
+            UT_Control_GetMapString(statusIndicatorException_mapTable, status.exceptionCode())); \
+        UT_ASSERT_FALSE(status.isOk()); \
+        UT_ASSERT_EQUAL(status.exceptionCode(), expectedException); \
+    } while (0)
+
 #define INDICATOR_GET_INDICATOR(indicatorHandle, indicatorId, indicatorObj) \
     do { \
         ::android::binder::Status status; \
-        UT_LOG_DEBUG("Calling getIndicator POS case, id=%d", indicatorId.value); \
+        UT_LOG_DEBUG("Calling getIndicator case, id=%d", indicatorId.value); \
         status = (indicatorHandle)->getIndicator(indicatorId, &(indicatorObj)); \
-        UT_LOG_DEBUG("Result getIndicator POS, status:[isOK:%s, exception:%s]", \
+        UT_LOG_DEBUG("Result getIndicator, status:[isOK:%s, exception:%s]", \
             UT_Control_GetMapString(bool_mapTable_indicator, status.isOk()), \
             UT_Control_GetMapString(statusIndicatorException_mapTable, status.exceptionCode())); \
         UT_ASSERT_TRUE(status.isOk()); \
         UT_ASSERT_EQUAL(status.exceptionCode(), ::android::binder::Status::EX_NONE); \
-        UT_ASSERT_TRUE(indicatorObj != nullptr); \
     } while (0)
+
+#define INDICATOR_GET_INDICATOR_NEG(indicatorHandle, indicatorId) \
+    do { \
+        ::android::binder::Status status; \
+        ::android::sp<com::rdk::hal::indicator::IIndicator> indicatorObj = nullptr; \
+        UT_LOG_DEBUG("Calling getIndicator NEG (invalid ID), id=%d", indicatorId.value); \
+        status = (indicatorHandle)->getIndicator(indicatorId, &indicatorObj); \
+        UT_LOG_DEBUG("Result getIndicator NEG, status:[isOK:%s, exception:%s]", \
+            UT_Control_GetMapString(bool_mapTable_indicator, status.isOk()), \
+            UT_Control_GetMapString(statusIndicatorException_mapTable, status.exceptionCode())); \
+        UT_ASSERT_TRUE(status.isOk()); \
+        UT_ASSERT_EQUAL(status.exceptionCode(), ::android::binder::Status::EX_NONE); \
+        UT_ASSERT_TRUE(indicatorObj == nullptr); \
+    } while (0)
+
 
 #define INDICATOR_GET_CAPS(indicatorObj, capsObj) \
     do { \
         ::android::binder::Status status; \
         status = indicatorObj->getCapabilities(&capsObj); \
         UT_ASSERT_TRUE(!capsObj.supportedStates.empty()); \
+        UT_ASSERT_TRUE(status.isOk()); \
+        UT_ASSERT_EQUAL(status.exceptionCode(), ::android::binder::Status::EX_NONE); \
         UT_LOG_DEBUG("Capabilities returned: %zu states", capsObj.supportedStates.size()); \
     } while (0)
 
@@ -129,20 +158,22 @@
     do { \
         ::android::binder::Status status; \
         status = indicatorObj->get(&stateStr); \
+        UT_ASSERT_TRUE(status.isOk()); \
+        UT_ASSERT_EQUAL(status.exceptionCode(), ::android::binder::Status::EX_NONE); \
         UT_ASSERT_TRUE(stateStr.size() > 0); \
         UT_LOG_DEBUG("Current state='%s'", android::String8(stateStr).string()); \
     } while (0)
 
 
-#define INDICATOR_SET_STATE_NEG(indicatorObj, stateStr16) \
+#define INDICATOR_SET_STATE_NEG(indicatorObj, stateStr) \
     do { \
         bool success = false; \
         ::android::binder::Status status; \
-        status = (indicatorObj)->set(stateStr16, &success); \
+        status = (indicatorObj)->set(stateStr, &success); \
         UT_ASSERT_TRUE(status.isOk()); \
         UT_ASSERT_EQUAL(status.exceptionCode(), ::android::binder::Status::EX_NONE); \
         UT_ASSERT_FALSE(success); \
-        UT_LOG_DEBUG("NEG: set() failed as expected for state '%s'", android::String8(stateStr16).string()); \
+        UT_LOG_INFO("NEG: set() failed as expected for state '%s'", android::String8(stateStr).string()); \
     } while (0)
 
  /**

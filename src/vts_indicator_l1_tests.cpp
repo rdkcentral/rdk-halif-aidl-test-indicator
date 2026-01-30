@@ -86,19 +86,89 @@
         {
         }
  };
-  
+ 
+ /**
+ * @brief Validates that the Indicator HAL returns all configured indicator instance IDs.
+ *
+ * This test ensures that:
+ * - getIndicatorIds() returns a non-empty list of IDs.
+ * - Each returned ID matches the IDs defined in the KVP profile (indicator.instances).
+ *
+ * **Test Group ID:** 01@n
+ * **Test Case ID:** 002@n
+ * **Priority:** High@n
+ *
+ * **Pre-Conditions:**@n
+ * - Indicator HAL must be initialized and gINDICATORHandle must be valid@n
+ * - The indicator instance IDs must be correctly configured in the profile@n
+ *
+ * **Dependencies:**@n
+ * - gINDICATORHandle must be valid@n
+ *
+ * **User Interaction:** None@n
+ *
+ * **Test Procedure:**@n
+ * | Step | Action | Input | Expected Result | Remarks |
+ * |01|Call getIndicatorIds() API|N/A|Returns a list of IDs|Mandatory step|
+ * |02|Verify that number of IDs matches profile count|indicator.instances|Returned IDs count == profile count|Ensures all configured instances are discovered|
+ * |03|Verify each returned ID matches the profile|Profile IDs|All IDs exist in returned list|Logs mismatch if any ID is missing|
+ */
+
 UT_ADD_TEST(VTS_L1_INDICATOR, getIndicatorIds_pos)
-{
-    bool result = false;
-    
+{   
     std::vector<com::rdk::hal::indicator::IIndicator::Id> indicatorIds;
     INDICATOR_GET_INDICATORIDS(gINDICATORHandle, indicatorIds);
 
     size_t supportedCount = UT_KVP_PROFILE_GET_LIST_COUNT("indicator.instances");
     UT_ASSERT_EQUAL(indicatorIds.size(), supportedCount);
 
+    // Validate each ID against config
+    for (size_t i = 0; i < supportedCount; ++i)
+    {
+        std::string idKey = "indicator.instances/" + std::to_string(i) + "/Id";
+        int expectedId = UT_KVP_PROFILE_GET_UINT8(idKey.c_str());
+
+        bool found = false;
+        for (const auto& id : indicatorIds)
+        {
+            if (id.value == expectedId)
+            {
+                found = true;
+                break;
+            }
+        }
+        
+        UT_ASSERT_TRUE(found);
+    }
+
     return;
 }
+
+
+/**
+ * @brief Validates that a valid indicator instance can be retrieved.
+ *
+ * This test ensures that:
+ * - getIndicator() returns a non-null IIndicator object for a valid ID.
+ *
+ * **Test Group ID:** 01@n
+ * **Test Case ID:** 003@n
+ * **Priority:** High@n
+ *
+ * **Pre-Conditions:**@n
+ * - Indicator HAL must be initialized and gINDICATORHandle must be valid@n
+ * - At least one indicator instance must be configured@n
+ *
+ * **Dependencies:**@n
+ * - gINDICATORHandle must be valid@n
+ *
+ * **User Interaction:** None@n
+ *
+ * **Test Procedure:**@n
+ * | Step | Action | Input | Expected Result | Remarks |
+ * |01|Call getIndicatorIds() API|N/A|Returns a list of IDs|Mandatory step|
+ * |02|Call getIndicator() API with first valid ID|ID from step 1|Returns non-null IIndicator object|Validates instance retrieval|
+ */
 
 UT_ADD_TEST(VTS_L1_INDICATOR, getIndicator_pos)
 {
@@ -114,9 +184,76 @@ UT_ADD_TEST(VTS_L1_INDICATOR, getIndicator_pos)
 
     INDICATOR_GET_INDICATOR(gINDICATORHandle, indicatorIds[0], indicatorObj);
 
-    UT_LOG_DEBUG("getIndicator positive test passed");
+    UT_ASSERT_TRUE(indicatorObj != nullptr); \
+
 }
 
+
+/**
+ * @brief Validates that getIndicator() handles invalid IDs safely.
+ *
+ * This test ensures that:
+ * - Passing an invalid ID returns null and does not crash.
+ *
+ * **Test Group ID:** 01@n
+ * **Test Case ID:** 004@n
+ * **Priority:** Medium@n
+ *
+ * **Pre-Conditions:**@n
+ * - Indicator HAL must be initialized and gINDICATORHandle must be valid@n
+ *
+ * **Dependencies:**@n
+ * - gINDICATORHandle must be valid@n
+ *
+ * **User Interaction:** None@n
+ *
+ * **Test Procedure:**@n
+ * | Step | Action | Input | Expected Result | Remarks |
+ * |01|Create an invalid ID (not in profile)|Invalid ID value|Invalid ID prepared|Mandatory step|
+ * |02|Call getIndicator() with invalid ID|Invalid ID|Returns null object|Validates HAL handles unsupported IDs safely|
+ */
+
+UT_ADD_TEST(VTS_L1_INDICATOR, getIndicator_neg)
+{
+    std::vector<com::rdk::hal::indicator::IIndicator::Id> indicatorIds;
+    INDICATOR_GET_INDICATORIDS(gINDICATORHandle, indicatorIds);
+
+    // Create invalid ID (not present in YAML instances)
+    com::rdk::hal::indicator::IIndicator::Id invalidId;
+    invalidId.value = 9999;
+
+    INDICATOR_GET_INDICATOR_NEG(gINDICATORHandle, invalidId);
+}
+
+
+/**
+ * @brief Validates that getCapabilities() returns all configured supported states.
+ *
+ * This test ensures that:
+ * - getCapabilities() returns a non-empty supportedStates list.
+ * - All states defined in profile (indicator.supportedStates) exist in the returned Capabilities.
+ *
+ * **Test Group ID:** 01@n
+ * **Test Case ID:** 005@n
+ * **Priority:** High@n
+ *
+ * **Pre-Conditions:**@n
+ * - Indicator HAL must be initialized and gINDICATORHandle must be valid@n
+ * - At least one indicator instance must be configured@n
+ *
+ * **Dependencies:**@n
+ * - gINDICATORHandle must be valid@n
+ *
+ * **User Interaction:** None@n
+ *
+ * **Test Procedure:**@n
+ * | Step | Action | Input | Expected Result | Remarks |
+ * |01|Call getIndicatorIds() API|N/A|Returns a list of IDs|Mandatory step|
+ * |02|Get first indicator instance|First ID from step 1|Non-null IIndicator object|Mandatory step|
+ * |03|Call getCapabilities()|Indicator object|Returns Capabilities object|Mandatory step|
+ * |04|Verify supportedStates list is not empty|Capabilities|List size > 0|Ensures HAL reports supported states|
+ * |05|Verify each profile state exists in supportedStates|Profile states|All profile states present|Logs mismatch if any state missing|
+ */
 UT_ADD_TEST(VTS_L1_INDICATOR, get_capabilities)
 {
     android::sp<com::rdk::hal::indicator::IIndicatorManager> manager = gINDICATORHandle;
@@ -133,7 +270,59 @@ UT_ADD_TEST(VTS_L1_INDICATOR, get_capabilities)
 
     UT_ASSERT_TRUE(caps.supportedStates.size() > 0);
     UT_LOG_INFO("Indicator supports %zu state(s)", caps.supportedStates.size());
+
+    size_t expectedCount = UT_KVP_PROFILE_GET_LIST_COUNT("indicator.supportedStates");
+    UT_ASSERT_EQUAL(caps.supportedStates.size(), expectedCount);
+
+    for (size_t i = 0; i < expectedCount; ++i)
+    {
+        std::string key = "indicator.supportedStates/" + std::to_string(i);
+
+        char stateBuf[UT_KVP_MAX_ELEMENT_SIZE] = {0};
+        UT_KVP_PROFILE_GET_STRING(key.c_str(), stateBuf);
+
+        android::String16 expectedState(stateBuf);
+
+        bool found = false;
+        for (const auto& state : caps.supportedStates)
+        {
+            if (state == expectedState)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        UT_ASSERT_TRUE(found);
+    }
 }
+
+/**
+ * @brief Validates that get() returns a valid current state.
+ *
+ * This test ensures that:
+ * - get() returns a state string that exists in the indicator’s supported states.
+ *
+ * **Test Group ID:** 01@n
+ * **Test Case ID:** 006@n
+ * **Priority:** High@n
+ *
+ * **Pre-Conditions:**@n
+ * - Indicator HAL must be initialized and gINDICATORHandle must be valid@n
+ * - At least one indicator instance must be configured@n
+ *
+ * **Dependencies:**@n
+ * - gINDICATORHandle must be valid@n
+ *
+ * **User Interaction:** None@n
+ *
+ * **Test Procedure:**@n
+ * | Step | Action | Input | Expected Result | Remarks |
+ * |01|Call getIndicatorIds() API|N/A|Returns list of IDs|Mandatory step|
+ * |02|Retrieve each indicator instance|Each ID|Non-null IIndicator objects|Mandatory step|
+ * |03|Call getCapabilities() for each instance|Indicator object|Obtain supported states|Mandatory step|
+ * |04|Call get()|Indicator object|Returned state is in supportedStates|Ensures current state is valid|
+ */
 
 UT_ADD_TEST(VTS_L1_INDICATOR, getState_pos)
 {
@@ -157,12 +346,50 @@ UT_ADD_TEST(VTS_L1_INDICATOR, getState_pos)
 
         INDICATOR_GET_STATE_POS(indicatorObj, state);
 
-        UT_ASSERT_EQUAL(state, caps.supportedStates[0]);
+        //UT_ASSERT_EQUAL(state, caps.supportedStates[0]);
 
+        bool isSupported = false;
+
+        for (const auto& supportedState : caps.supportedStates)
+        {
+            if (state == supportedState)
+            {
+                isSupported = true;
+                break;
+            }
+        }
+        UT_ASSERT_TRUE(isSupported);
     }
 }
 
-UT_ADD_TEST(VTS_L1_INDICATOR, set_state_pos)
+/**
+ * @brief Validates that all supported states can be set successfully.
+ *
+ * This test ensures that:
+ * - set() API can set each supported state returned by getCapabilities().
+ * - No errors occur while setting supported states.
+ *
+ * **Test Group ID:** 01@n
+ * **Test Case ID:** 007@n
+ * **Priority:** High@n
+ *
+ * **Pre-Conditions:**@n
+ * - Indicator HAL must be initialized and gINDICATORHandle must be valid@n
+ * - At least one indicator instance must be configured@n
+ *
+ * **Dependencies:**@n
+ * - gINDICATORHandle must be valid@n
+ *
+ * **User Interaction:** None@n
+ *
+ * **Test Procedure:**@n
+ * | Step | Action | Input | Expected Result | Remarks |
+ * |01|Call getIndicatorIds() API|N/A|Returns list of IDs|Mandatory step|
+ * |02|Retrieve each indicator instance|Each ID|Non-null IIndicator objects|Mandatory step|
+ * |03|Call getCapabilities()|Indicator object|Obtain supported states|Mandatory step|
+ * |04|Call set() for each supported state|Supported state|Returns success|Validates HAL accepts all supported states|
+ */
+UT_ADD_TEST(VTS_L1_INDICATOR, setState_pos)
 {
     android::sp<com::rdk::hal::indicator::IIndicatorManager> manager = gINDICATORHandle;
     std::vector<com::rdk::hal::indicator::IIndicator::Id> ids;
@@ -189,19 +416,47 @@ UT_ADD_TEST(VTS_L1_INDICATOR, set_state_pos)
     }
 }
 
+
+/**
+ * @brief Validates that set() rejects invalid state strings.
+ *
+ * This test ensures that:
+ * - set() fails when given an empty or invalid state string.
+ *
+ * **Test Group ID:** 01@n
+ * **Test Case ID:** 008@n
+ * **Priority:** Medium@n
+ *
+ * **Pre-Conditions:**@n
+ * - Indicator HAL must be initialized and gINDICATORHandle must be valid@n
+ * - At least one indicator instance must be configured@n
+ *
+ * **Dependencies:**@n
+ * - gINDICATORHandle must be valid@n
+ *
+ * **User Interaction:** None@n
+ *
+ * **Test Procedure:**@n
+ * | Step | Action | Input | Expected Result | Remarks |
+ * |01|Call getIndicatorIds() API|N/A|Returns list of IDs|Mandatory step|
+ * |02|Retrieve first indicator instance|First ID|Non-null IIndicator object|Mandatory step|
+ * |03|Call set() with invalid state|Empty string|set() fails|Validates error handling|
+ */
 UT_ADD_TEST(VTS_L1_INDICATOR, setState_neg)
 {
     android::sp<com::rdk::hal::indicator::IIndicatorManager> manager = gINDICATORHandle;
     std::vector<com::rdk::hal::indicator::IIndicator::Id> ids;
     INDICATOR_GET_INDICATORIDS(manager, ids);
+    UT_ASSERT_TRUE(ids.size() > 0);
 
     android::sp<com::rdk::hal::indicator::IIndicator> indicatorObj = nullptr;
     INDICATOR_GET_INDICATOR(manager, ids[0], indicatorObj);
 
-    android::String16 invalidState("INVALID_STATE");
+    // Validating with empty string
+    android::String16 invalidState("");
     INDICATOR_SET_STATE_NEG(indicatorObj, invalidState);
 }
- 
+
  /**
  * @} // End of indicator_HALTEST_CLASS
  * @} // End of indicator_HALTEST
