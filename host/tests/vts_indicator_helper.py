@@ -48,7 +48,7 @@ class indicatorHelperClass(utHelperClass):
         Initializes the test class
         """
         self.moduleName = "Indicator"
-        self.profile_moduleName = "IIndicator"
+        self.profile_moduleName = "indicator"
         super().__init__(testName, qcId, log)
 
         self.log = log

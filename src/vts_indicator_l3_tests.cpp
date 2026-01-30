@@ -59,7 +59,7 @@
 #include "vts_indicator.h"
 #include "vts_indicator_parse_testconfig.h"
 
-extern sp<IIndicator> gINDICATORHandle;
+extern sp<IIndicatorManager> gINDICATORHandle;
 static const char *gModuleName = "Indicator";
 static const char *gTestGroup = "L3";
 
@@ -105,35 +105,67 @@ public:
 UT_ADD_TEST(VTS_L3_INDICATOR, SetStates)
 {
     const char *testName = "SetStates";
-    
-    std::vector<com::rdk::hal::indicator::State> indicator_state;
-    com::rdk::hal::indicator::State getState;
-    bool result = false;
+
+    std::vector<android::String16> indicator_states;
     uint32_t repeat = 0;
     uint32_t delay = 0;
 
-    UT_status_t status = UT_STATUS_OK;
-
-    status = vts_indicator_parse_SetStates_config(VTS_INDICATOR_TEST_CONFIG_PATH, gModuleName, gTestGroup, testName,
-                                                  indicator_state, &repeat, &delay);
+    UT_status_t status = vts_indicator_parse_SetStates_config(
+                            VTS_INDICATOR_TEST_CONFIG_PATH,
+                            gModuleName,
+                            gTestGroup,
+                            testName,
+                            indicator_states,
+                            &repeat,
+                            &delay);
 
     UT_ASSERT_EQUAL_FATAL(status, UT_STATUS_OK);
 
-    for(uint32_t repeatIndex = 0; repeatIndex < repeat; repeatIndex++)
+    // STEP 1: Manager → Get IDs
+    android::sp<com::rdk::hal::indicator::IIndicatorManager> manager = gINDICATORHandle;
+    std::vector<com::rdk::hal::indicator::IIndicator::Id> ids;
+    INDICATOR_GET_INDICATORIDS(manager, ids);
+    UT_ASSERT_TRUE(ids.size() > 0);
+
+    // Loop through each instance
+    for (const auto& id : ids)
     {
-        for(auto &states : indicator_state)
+        android::sp<com::rdk::hal::indicator::IIndicator> indicatorObj = nullptr;
+
+        // STEP 2: Get Indicator instance
+        INDICATOR_GET_INDICATOR(manager, id, indicatorObj);
+        UT_ASSERT_TRUE(indicatorObj != nullptr);
+
+        // STEP 3: Get Capabilities
+        com::rdk::hal::indicator::Capabilities caps;
+        INDICATOR_GET_CAPS(indicatorObj, caps);
+
+        for (uint32_t repeatIndex = 0; repeatIndex < repeat; repeatIndex++)
         {
-            INDICATOR_SET(gINDICATORHandle, states, result);
-            UT_ASSERT_TRUE(result);
+            for (auto &state : indicator_states)
+            {
+                // Only test states that instance supports
+                if (std::find(caps.supportedStates.begin(),
+                              caps.supportedStates.end(),
+                              state) == caps.supportedStates.end())
+                {
+                    UT_LOG_INFO("State not supported for ID=%d", id.value);
+                    continue;
+                }
 
-            this_thread::sleep_for(chrono::milliseconds(delay));
+                // STEP 4: SET
+                INDICATOR_SET_STATE_POS(indicatorObj, state);
 
-            INDICATOR_GET(gINDICATORHandle, getState);
-            UT_ASSERT_EQUAL(getState, states);
+                this_thread::sleep_for(chrono::milliseconds(delay));
+
+                // STEP 5: GET verify
+                android::String16 getState;
+                INDICATOR_GET_STATE_POS(indicatorObj, getState);
+
+                UT_ASSERT_EQUAL(getState, state);
+            }
         }
     }
-    
-    return;
 }
 
 
