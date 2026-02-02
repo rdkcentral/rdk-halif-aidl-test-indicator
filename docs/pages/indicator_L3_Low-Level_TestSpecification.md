@@ -94,12 +94,15 @@ Indicator:
 ```yaml
 Indicator:
     States:
+        BOOT:
+            pattern: "LED_ON"
+            color: [RED]
         ACTIVE:
             pattern: "LED_OFF"
-            color: []
+            color: [GREEN]
         "OFF":
             pattern: "LED_OFF"
-            color: [RED]
+            color: []
         STANDBY:
             pattern: "LED_ON"
             color: [YELLOW]
@@ -165,12 +168,15 @@ Indicator:
 ```yaml
 Indicator:
     States:
+        BOOT:
+            pattern: "LED_ON"
+            color: [RED]
         ACTIVE:
             pattern: "LED_OFF"
-            color: []
+            color: [GREEN]
         "OFF":
             pattern: "LED_OFF"
-            color: [RED]
+            color: []
         STANDBY:
             pattern: "LED_ON"
             color: [YELLOW]
