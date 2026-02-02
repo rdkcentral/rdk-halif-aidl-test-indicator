@@ -167,9 +167,10 @@ UT_ADD_TEST(VTS_L1_INDICATOR, getIndicatorIds_pos)
  * **Test Procedure:**@n
  * | Step | Action | Input | Expected Result | Remarks |
  * |01|Call getIndicatorIds() API|N/A|Returns a list of IDs|Mandatory step|
- * |02|Call getIndicator() API with first valid ID|ID from step 1|Returns non-null IIndicator object|Validates instance retrieval|
- */
+ * |02|For each ID, call getIndicator()|Each ID|Returns non-null IIndicator object|Validates instance retrieval|
+ * |03|Verify returned object is non-null|N/A|IIndicator object is valid|Ensures valid instance is returned|
 
+ */
 UT_ADD_TEST(VTS_L1_INDICATOR, getIndicator_pos)
 {
     std::vector<com::rdk::hal::indicator::IIndicator::Id> indicatorIds;
@@ -179,15 +180,19 @@ UT_ADD_TEST(VTS_L1_INDICATOR, getIndicator_pos)
 
     UT_ASSERT_TRUE(indicatorIds.size() > 0);
 
-    // Step 2: Fetch first valid indicator
-    android::sp<com::rdk::hal::indicator::IIndicator> indicatorObj = nullptr;
+    // Step 2: For each ID, fetch indicator handle
+    for (const auto& id : indicatorIds)
+    {
+        android::sp<com::rdk::hal::indicator::IIndicator> indicatorObj = nullptr;
 
-    INDICATOR_GET_INDICATOR(gINDICATORHandle, indicatorIds[0], indicatorObj);
+        INDICATOR_GET_INDICATOR(gINDICATORHandle, id, indicatorObj);
 
-    UT_ASSERT_TRUE(indicatorObj != nullptr); \
+        UT_LOG_INFO("Validating indicator handle for ID=%d", id.value);
 
+        // Each valid ID must return a valid binder object
+        UT_ASSERT_TRUE(indicatorObj != nullptr);
+    }
 }
-
 
 /**
  * @brief Validates that getIndicator() handles invalid IDs safely.
@@ -209,22 +214,41 @@ UT_ADD_TEST(VTS_L1_INDICATOR, getIndicator_pos)
  *
  * **Test Procedure:**@n
  * | Step | Action | Input | Expected Result | Remarks |
- * |01|Create an invalid ID (not in profile)|Invalid ID value|Invalid ID prepared|Mandatory step|
- * |02|Call getIndicator() with invalid ID|Invalid ID|Returns null object|Validates HAL handles unsupported IDs safely|
+ * |01|Call getIndicatorIds() API|N/A|Returns a list of IDs|Mandatory step|
+ * |02|Create invalid ID (max existing ID + 1)|List of IDs|Invalid ID created|Ensures ID is out of range|
+ * |03|Call getIndicator() with invalid ID|Invalid ID|Returns null IIndicator object|Validates safe handling of invalid ID|
+ * |04|Call getIndicator() with negative ID|-101|Returns null IIndicator object|Validates safe handling of negative ID| 
  */
 
 UT_ADD_TEST(VTS_L1_INDICATOR, getIndicator_neg)
 {
     std::vector<com::rdk::hal::indicator::IIndicator::Id> indicatorIds;
     INDICATOR_GET_INDICATORIDS(gINDICATORHandle, indicatorIds);
+    UT_ASSERT_TRUE(indicatorIds.size() > 0);
 
-    // Create invalid ID (not present in YAML instances)
+    // Create invalid ID (not present in YAML instances) by taking max existing ID and adding 1
     com::rdk::hal::indicator::IIndicator::Id invalidId;
-    invalidId.value = 9999;
+    android::sp<com::rdk::hal::indicator::IIndicator> indicatorObj = nullptr;
 
-    INDICATOR_GET_INDICATOR_NEG(gINDICATORHandle, invalidId);
+    auto maxIdValue = indicatorIds[0].value;
+    for (const auto &id : indicatorIds)
+    {
+        if (id.value > maxIdValue)
+        {
+            maxIdValue = id.value;
+        }
+    }
+    invalidId.value = maxIdValue + 1;
+
+    // Test getIndicator with invalid ID
+    INDICATOR_GET_INDICATOR_NEG(gINDICATORHandle, indicatorObj, invalidId);
+    UT_ASSERT_TRUE(indicatorObj == nullptr);
+
+    // Test getIndicator with with a negative ID
+    invalidId.value = -101;
+    INDICATOR_GET_INDICATOR_NEG(gINDICATORHandle, indicatorObj, invalidId);
+    UT_ASSERT_TRUE(indicatorObj == nullptr);
 }
-
 
 /**
  * @brief Validates that getCapabilities() returns all configured supported states.
@@ -249,11 +273,10 @@ UT_ADD_TEST(VTS_L1_INDICATOR, getIndicator_neg)
  * **Test Procedure:**@n
  * | Step | Action | Input | Expected Result | Remarks |
  * |01|Call getIndicatorIds() API|N/A|Returns a list of IDs|Mandatory step|
- * |02|Get first indicator instance|First ID from step 1|Non-null IIndicator object|Mandatory step|
- * |03|Call getCapabilities()|Indicator object|Returns Capabilities object|Mandatory step|
- * |04|Verify supportedStates list is not empty|Capabilities|List size > 0|Ensures HAL reports supported states|
- * |05|Verify each profile state exists in supportedStates|Profile states|All profile states present|Logs mismatch if any state missing|
- */
+ * |02|Retrieve each indicator instance|Each ID|Non-null IIndicator objects|Mandatory step|
+ * |03|Call getCapabilities() for each instance|Indicator object|Returns Capabilities with supportedStates|Validates capabilities retrieval|
+ * |04|Verify each supported state against profile|Profile states|All profile states exist in supportedStates|Ensures HAL reports all configured states|
+  */
 UT_ADD_TEST(VTS_L1_INDICATOR, get_capabilities)
 {
     android::sp<com::rdk::hal::indicator::IIndicatorManager> manager = gINDICATORHandle;
@@ -261,39 +284,42 @@ UT_ADD_TEST(VTS_L1_INDICATOR, get_capabilities)
     INDICATOR_GET_INDICATORIDS(manager, ids);
     UT_ASSERT_TRUE(ids.size() > 0);
 
-    android::sp<com::rdk::hal::indicator::IIndicator> indicatorObj = nullptr;
-    INDICATOR_GET_INDICATOR(manager, ids[0], indicatorObj);
-    UT_ASSERT_TRUE(indicatorObj != nullptr);
-
-    com::rdk::hal::indicator::Capabilities caps;
-    INDICATOR_GET_CAPS(indicatorObj, caps);
-
-    UT_ASSERT_TRUE(caps.supportedStates.size() > 0);
-    UT_LOG_INFO("Indicator supports %zu state(s)", caps.supportedStates.size());
-
-    size_t expectedCount = UT_KVP_PROFILE_GET_LIST_COUNT("indicator.supportedStates");
-    UT_ASSERT_EQUAL(caps.supportedStates.size(), expectedCount);
-
-    for (size_t i = 0; i < expectedCount; ++i)
+    for (const auto& id : ids)
     {
-        std::string key = "indicator.supportedStates/" + std::to_string(i);
+        android::sp<com::rdk::hal::indicator::IIndicator> indicatorObj = nullptr;
+        INDICATOR_GET_INDICATOR(manager, id, indicatorObj);
+        UT_ASSERT_TRUE(indicatorObj != nullptr);
 
-        char stateBuf[UT_KVP_MAX_ELEMENT_SIZE] = {0};
-        UT_KVP_PROFILE_GET_STRING(key.c_str(), stateBuf);
+        com::rdk::hal::indicator::Capabilities caps;
+        INDICATOR_GET_CAPS(indicatorObj, caps);
 
-        android::String16 expectedState(stateBuf);
+        UT_ASSERT_TRUE(caps.supportedStates.size() > 0);
+        UT_LOG_INFO("Indicator supports %zu state(s)", caps.supportedStates.size());
 
-        bool found = false;
-        for (const auto& state : caps.supportedStates)
+        size_t expectedCount = UT_KVP_PROFILE_GET_LIST_COUNT("indicator.supportedStates");
+        UT_ASSERT_EQUAL(caps.supportedStates.size(), expectedCount);
+
+        for (size_t i = 0; i < expectedCount; ++i)
         {
-            if (state == expectedState)
-            {
-                found = true;
-                break;
-            }
-        }
+            std::string key = "indicator.supportedStates." + std::to_string(i);
 
-        UT_ASSERT_TRUE(found);
+            char stateBuf[UT_KVP_MAX_ELEMENT_SIZE] = {0};
+            UT_KVP_PROFILE_GET_STRING(key.c_str(), stateBuf);
+
+            android::String16 expectedState(stateBuf);
+
+            bool found = false;
+            for (const auto& state : caps.supportedStates)
+            {
+                if (state == expectedState)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            
+            UT_ASSERT_TRUE(found);
+        }
     }
 }
 
@@ -345,8 +371,6 @@ UT_ADD_TEST(VTS_L1_INDICATOR, getState_pos)
         UT_ASSERT_TRUE(caps.supportedStates.size() > 0);
 
         INDICATOR_GET_STATE_POS(indicatorObj, state);
-
-        //UT_ASSERT_EQUAL(state, caps.supportedStates[0]);
 
         bool isSupported = false;
 
@@ -439,8 +463,9 @@ UT_ADD_TEST(VTS_L1_INDICATOR, setState_pos)
  * **Test Procedure:**@n
  * | Step | Action | Input | Expected Result | Remarks |
  * |01|Call getIndicatorIds() API|N/A|Returns list of IDs|Mandatory step|
- * |02|Retrieve first indicator instance|First ID|Non-null IIndicator object|Mandatory step|
- * |03|Call set() with invalid state|Empty string|set() fails|Validates error handling|
+ * |02|Retrieve each indicator instance|Each ID|Non-null IIndicator objects|Mandatory step|
+ * |03|Call set() with invalid state|Invalid state string|Returns failure|Validates HAL rejects invalid states|
+ * |04|Call set() with empty string|""|Returns failure|Validates HAL rejects empty states|
  */
 UT_ADD_TEST(VTS_L1_INDICATOR, setState_neg)
 {
@@ -449,12 +474,20 @@ UT_ADD_TEST(VTS_L1_INDICATOR, setState_neg)
     INDICATOR_GET_INDICATORIDS(manager, ids);
     UT_ASSERT_TRUE(ids.size() > 0);
 
-    android::sp<com::rdk::hal::indicator::IIndicator> indicatorObj = nullptr;
-    INDICATOR_GET_INDICATOR(manager, ids[0], indicatorObj);
+    for (const auto& id : ids)
+    {
+        android::sp<com::rdk::hal::indicator::IIndicator> indicatorObj = nullptr;
+        INDICATOR_GET_INDICATOR(manager, id, indicatorObj);
+        UT_ASSERT_TRUE(indicatorObj != nullptr);
 
-    // Validating with empty string
-    android::String16 invalidState("");
-    INDICATOR_SET_STATE_NEG(indicatorObj, invalidState);
+        // Validating with an invalid state
+        android::String16 invalidState("INVALID_STATE");
+        INDICATOR_SET_STATE_NEG(indicatorObj, invalidState);
+
+        // Validating with empty string
+        android::String16 emptyInvalidState("");
+        INDICATOR_SET_STATE_NEG(indicatorObj, emptyInvalidState);
+    }
 }
 
  /**
