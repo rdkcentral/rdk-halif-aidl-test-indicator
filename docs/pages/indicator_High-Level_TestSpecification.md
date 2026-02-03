@@ -41,10 +41,10 @@ The `HAL` supports a predefined set of states (e.g., `BOOT`, `ACTIVE`, `WPS_CONN
 
 | Test | Description | HAL APIs |
 |------|-------------|----------|
-| Set and Get – General States | Set and get each general state (`ACTIVE`, `STANDBY`, `OFF`, `DEEP_SLEEP`). Verify the response of `get()` matches the set state. | `getIndicatorIds()`, `getIndicator()`, `set()`, `get()` |
-| Set and Get – WPS States |Set and get each WPS-related states `WPS_CONNECTING`, `WPS_CONNECTED`, `WPS_ERROR`, `WPS_SES_OVERLAP`. Verify the response of `get()` matches the set state. | `getIndicatorIds()`, `getIndicator()`, `set()`, `get()` |
-| Set and Get – Network States | Set and get each network-related states: `WIFI_ERROR`, `IP_ACQUIRED`, `NO_IP`. Verify the response of `get()` matches the set state. | `getIndicatorIds()`, `getIndicator()`, `set()`, `get()` |
-| Set and Get – System Maintenance States | Set and get each system operational states `FULL_SYSTEM_RESET`, `USB_UPGRADE`, `SOFTWARE_DOWNLOAD_ERROR`, `PSU_FAILURE`. Verify the response of `get()` matches the set state.| `getIndicatorIds()`, `getIndicator()`, `set()`, `get()` |
+| Set and Get – General States | Set and get each general state (`ACTIVE`, `STANDBY`, `OFF`, `DEEP_SLEEP`). Verify the response of `get()` matches the set state. | `getIndicatorIds()`, `getIndicator()`, `getCapabilities()`, `set()`, `get()` |
+| Set and Get – WPS States |Set and get each WPS-related states `WPS_CONNECTING`, `WPS_CONNECTED`, `WPS_ERROR`, `WPS_SES_OVERLAP`. Verify the response of `get()` matches the set state. | `getIndicatorIds()`, `getIndicator()`, `getCapabilities()`, `set()`, `get()` |
+| Set and Get – Network States | Set and get each network-related states: `WIFI_ERROR`, `IP_ACQUIRED`, `NO_IP`. Verify the response of `get()` matches the set state. | `getIndicatorIds()`, `getIndicator()`, `getCapabilities()`, `set()`, `get()` |
+| Set and Get – System Maintenance States | Set and get each system operational states `FULL_SYSTEM_RESET`, `USB_UPGRADE`, `SOFTWARE_DOWNLOAD_ERROR`, `PSU_FAILURE`. Verify the response of `get()` matches the set state.| `getIndicatorIds()`, `getIndicator()`, `getCapabilities()`, `set()`, `get()` |
 
 
 ## L3 Test Specification

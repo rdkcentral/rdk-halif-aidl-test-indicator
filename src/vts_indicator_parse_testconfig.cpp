@@ -100,6 +100,11 @@ UT_status_t vts_indicator_parse_SetStates_config(char *configurationFile, const 
     int32_t statesSize = 0;
 
     ut_kvp_instance_t* kvpTestInstance = (ut_kvp_instance_t*)vcomponentkvp_create_instance(configurationFile);
+    if (kvpTestInstance == NULL)
+    {
+        UT_LOG_ERROR("Failed to create or open KVP test configuration instance");
+        return UT_STATUS_FAILURE;
+    }
 
     const std::string testNode = std::string(module) + "." + testGroup + "." + testName;
     const std::string inputstatestr = testNode + ".Parameters.state";
@@ -114,6 +119,7 @@ UT_status_t vts_indicator_parse_SetStates_config(char *configurationFile, const 
     if (statesSize <= 0)
     {
         UT_LOG_ERROR("No states configured in test config");
+        vcomponentkvp_destroy_instance(kvpTestInstance);
         return UT_STATUS_FAILURE;
     }
 

@@ -140,6 +140,9 @@ UT_ADD_TEST(VTS_L3_INDICATOR, SetStates)
         com::rdk::hal::indicator::Capabilities caps;
         INDICATOR_GET_CAPS(indicatorObj, caps);
 
+        UT_ASSERT_TRUE(caps.supportedStates.size() > 0);
+        UT_LOG_INFO("Indicator supports %zu state(s)", caps.supportedStates.size());
+
         for (uint32_t repeatIndex = 0; repeatIndex < repeat; repeatIndex++)
         {
             for (auto &state : indicator_states)

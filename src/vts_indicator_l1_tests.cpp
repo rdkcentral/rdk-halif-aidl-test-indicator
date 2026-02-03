@@ -95,7 +95,7 @@
  * - Each returned ID matches the IDs defined in the KVP profile (indicator.instances).
  *
  * **Test Group ID:** 01@n
- * **Test Case ID:** 002@n
+ * **Test Case ID:** 001@n
  * **Priority:** High@n
  *
  * **Pre-Conditions:**@n
@@ -152,7 +152,7 @@ UT_ADD_TEST(VTS_L1_INDICATOR, getIndicatorIds_pos)
  * - getIndicator() returns a non-null IIndicator object for a valid ID.
  *
  * **Test Group ID:** 01@n
- * **Test Case ID:** 003@n
+ * **Test Case ID:** 002@n
  * **Priority:** High@n
  *
  * **Pre-Conditions:**@n
@@ -201,7 +201,7 @@ UT_ADD_TEST(VTS_L1_INDICATOR, getIndicator_pos)
  * - Passing an invalid ID returns null and does not crash.
  *
  * **Test Group ID:** 01@n
- * **Test Case ID:** 004@n
+ * **Test Case ID:** 003@n
  * **Priority:** Medium@n
  *
  * **Pre-Conditions:**@n
@@ -258,7 +258,7 @@ UT_ADD_TEST(VTS_L1_INDICATOR, getIndicator_neg)
  * - All states defined in profile (indicator.supportedStates) exist in the returned Capabilities.
  *
  * **Test Group ID:** 01@n
- * **Test Case ID:** 005@n
+ * **Test Case ID:** 004@n
  * **Priority:** High@n
  *
  * **Pre-Conditions:**@n
@@ -277,7 +277,7 @@ UT_ADD_TEST(VTS_L1_INDICATOR, getIndicator_neg)
  * |03|Call getCapabilities() for each instance|Indicator object|Returns Capabilities with supportedStates|Validates capabilities retrieval|
  * |04|Verify each supported state against profile|Profile states|All profile states exist in supportedStates|Ensures HAL reports all configured states|
   */
-UT_ADD_TEST(VTS_L1_INDICATOR, get_capabilities)
+UT_ADD_TEST(VTS_L1_INDICATOR, getCapabilities_pos)
 {
     android::sp<com::rdk::hal::indicator::IIndicatorManager> manager = gINDICATORHandle;
     std::vector<com::rdk::hal::indicator::IIndicator::Id> ids;
@@ -330,7 +330,7 @@ UT_ADD_TEST(VTS_L1_INDICATOR, get_capabilities)
  * - get() returns a state string that exists in the indicator’s supported states.
  *
  * **Test Group ID:** 01@n
- * **Test Case ID:** 006@n
+ * **Test Case ID:** 005@n
  * **Priority:** High@n
  *
  * **Pre-Conditions:**@n
@@ -394,7 +394,7 @@ UT_ADD_TEST(VTS_L1_INDICATOR, getState_pos)
  * - No errors occur while setting supported states.
  *
  * **Test Group ID:** 01@n
- * **Test Case ID:** 007@n
+ * **Test Case ID:** 006@n
  * **Priority:** High@n
  *
  * **Pre-Conditions:**@n
@@ -448,7 +448,7 @@ UT_ADD_TEST(VTS_L1_INDICATOR, setState_pos)
  * - set() fails when given an empty or invalid state string.
  *
  * **Test Group ID:** 01@n
- * **Test Case ID:** 008@n
+ * **Test Case ID:** 007@n
  * **Priority:** Medium@n
  *
  * **Pre-Conditions:**@n
