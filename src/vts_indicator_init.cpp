@@ -63,7 +63,7 @@
  #include "vts_indicator_init.h"
  #include "ut_log.h"
  
- #include "com/rdk/hal/indicator/IIndicator.h"
+ #include "com/rdk/hal/indicator/IIndicatorManager.h"
  
  #include <binder/IServiceManager.h>
  #include <binder/IBinder.h>
@@ -79,12 +79,12 @@
  using namespace com::rdk::hal;
  using namespace com::rdk::hal::indicator;
  
- sp<IIndicator> gINDICATORHandle = nullptr;
+ sp<IIndicatorManager> gINDICATORHandle = nullptr;
  
  static UT_status_t vts_indicator_getService()
  {
-     gINDICATORHandle = android::interface_cast<IIndicator>(
-         defaultServiceManager()->getService(String16(IIndicator::serviceName().c_str())));
+     gINDICATORHandle = android::interface_cast<IIndicatorManager>(
+         defaultServiceManager()->getService(String16(IIndicatorManager::serviceName().c_str())));
  
      if (gINDICATORHandle == nullptr)
      {

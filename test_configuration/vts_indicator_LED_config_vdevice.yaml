@@ -1,5 +1,8 @@
 Indicator:
     States:
+        BOOT:
+            pattern: "LED_OFF"
+            color: [RED]
         ACTIVE:
             pattern: "LED_OFF"
             color: []

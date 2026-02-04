@@ -94,44 +94,49 @@ static void vcomponentkvp_destroy_instance(void *instance)
     ut_kvp_destroyInstance((ut_kvp_instance_t*)instance);
 }
 
-
 UT_status_t vts_indicator_parse_SetStates_config(char *configurationFile, const char *module, const char *testGroup,
-                                                 const char *testName, std::vector<com::rdk::hal::indicator::State> &indicator_state, 
-                                                 uint32_t* repeat, uint32_t* delay)
+    const char *testName, std::vector<android::String16> &indicator_states, uint32_t* repeat, uint32_t* delay)
 {
-    char resultKVP[UT_KVP_MAX_ELEMENT_SIZE] = {0};
     int32_t statesSize = 0;
 
-    void *testconfig = vcomponentkvp_create_instance(configurationFile);
-    ut_kvp_instance_t* kvpTestInstance = (ut_kvp_instance_t*)testconfig;
+    ut_kvp_instance_t* kvpTestInstance = (ut_kvp_instance_t*)vcomponentkvp_create_instance(configurationFile);
+    if (kvpTestInstance == NULL)
+    {
+        UT_LOG_ERROR("Failed to create or open KVP test configuration instance");
+        return UT_STATUS_FAILURE;
+    }
 
-    const std::string testNode = string(module) + "." + string(testGroup) + "." + string(testName);
-    const std::string inputstatestr = testNode + ".Parameters" + ".state";
-    const std::string repeat_value = testNode + ".Parameters" + ".repeat";
-    const std::string delay_value = testNode + ".Parameters" + ".delay";
+    const std::string testNode = std::string(module) + "." + testGroup + "." + testName;
+    const std::string inputstatestr = testNode + ".Parameters.state";
+    const std::string repeat_value = testNode + ".Parameters.repeat";
+    const std::string delay_value = testNode + ".Parameters.delay";
 
     *repeat = ut_kvp_getUInt32Field(kvpTestInstance, repeat_value.c_str());
+    *delay  = ut_kvp_getUInt32Field(kvpTestInstance, delay_value.c_str());
 
-    *delay = ut_kvp_getUInt32Field(kvpTestInstance, delay_value.c_str());
-    
     statesSize = ut_kvp_getListCount(kvpTestInstance, inputstatestr.c_str());
 
-    if(statesSize > 0)
+    if (statesSize <= 0)
     {
-        for (int32_t index = 0; index < statesSize; index++)
-        {
-            char states[UT_KVP_MAX_ELEMENT_SIZE] = {0};
-            ut_kvp_status_t ret = ut_kvp_getStringField(kvpTestInstance, (inputstatestr + "." + std::to_string(index)).c_str(),states, UT_KVP_MAX_ELEMENT_SIZE);
-            if (ret == UT_KVP_STATUS_SUCCESS)
-            {
-                indicator_state.push_back(fromString(states));
-            }
-        }
-    }
-    else
-    {
-        UT_LOG_ERROR("Failed to parse message from test configuration");
+        UT_LOG_ERROR("No states configured in test config");
+        vcomponentkvp_destroy_instance(kvpTestInstance);
         return UT_STATUS_FAILURE;
+    }
+
+    for (int32_t index = 0; index < statesSize; index++)
+    {
+        char stateBuf[UT_KVP_MAX_ELEMENT_SIZE] = {0};
+
+        ut_kvp_status_t ret = ut_kvp_getStringField(
+            kvpTestInstance,
+            (inputstatestr + "." + std::to_string(index)).c_str(),
+            stateBuf,
+            UT_KVP_MAX_ELEMENT_SIZE);
+
+        if (ret == UT_KVP_STATUS_SUCCESS && stateBuf[0] != '\0')
+        {
+            indicator_states.emplace_back(stateBuf);
+        }
     }
 
     vcomponentkvp_destroy_instance(kvpTestInstance);
