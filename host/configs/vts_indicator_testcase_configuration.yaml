@@ -34,10 +34,13 @@ Indicator:
     #######################################
     - name: "VTS_L1_INDICATOR"
       test_cases: 
+          - "getIndicatorIds_pos"
+          - "getIndicator_pos"
+          - "getIndicator_neg"
           - "getCapabilities_pos"
-          - "get_pos"
-          - "set_pos"
-          - "set_neg"
+          - "getState_pos"
+          - "setState_pos"
+          - "setState_neg"
     - name: "VTS_L2_INDICATOR"
       test_cases:
           - "test_l2_setgetGeneralStates"
