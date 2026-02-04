@@ -254,6 +254,7 @@ install_test()
     install -t ${INSTALL_PATH} run.sh
 
     cp -r ${PROFILES_DIR} ${INSTALL_PATH}
+    cp -r "${TOP}/test_configuration" ${INSTALL_PATH}
     cp -r "${VCOMPONENT_DIR}/vcomponent_configurations" ${INSTALL_PATH}
 
     cd ${INSTALL_PATH}
