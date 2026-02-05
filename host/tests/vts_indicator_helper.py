@@ -52,7 +52,7 @@ class indicatorHelperClass(utHelperClass):
             moduleName = "Indicator"
         self.moduleName = moduleName
 
-        self.profile_moduleName = "IIndicator"
+        self.profile_moduleName = "indicator"
         super().__init__(testName, qcId, log)
 
         self.log = log
