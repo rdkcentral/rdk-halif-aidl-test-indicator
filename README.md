@@ -24,7 +24,7 @@ This repository contains the Test Suites(`L1` , `L2` and `L3`) for INDICATOR `HA
 
 |SNo|Document Name|Document Description|Document Link|
 |---|-------------|--------------------|-------------|
-|1|`HAL` Specification Document|This document provides specific information on the APIs for which tests are written in this module|[HAL Interface](https://github.com/rdkcentral/rdk-halif-aidl/blob/0.12.0/README.md)|
+|1|`HAL` Specification Document|This document provides specific information on the APIs for which tests are written in this module|[HAL Interface](https://github.com/rdkcentral/rdk-halif-aidl/blob/0.15.0/README.md)|
 |2|High Level Test Specification|High Level Test Specification Documentation for the `INDICATOR`|[indicator_High-Level_TestSpecification.md](docs/pages/indicator_High-Level_TestSpecification.md)||
 |3|`L2` Low Level Test Specification|`L2` Low Level Test Specification and Procedure Documentation for the `INDICATOR`|[indicator_L2_Low-Level_TestSpecification.md](docs/pages/indicator_L2_Low-Level_TestSpecification.md)|
 |4|`L3` Low Level Test Specification|`L3` Low Level Test Specification for the `INDICATOR`|[indicator_L3_Low-Level_TestSpecification.md](docs/pages/indicator_L3_Low-Level_TestSpecification.md)|
