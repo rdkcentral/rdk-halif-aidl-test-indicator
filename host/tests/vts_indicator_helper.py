@@ -43,11 +43,15 @@ INDICATOR_L3_TEST_CONFIG_FILE = os.path.join(os.path.join(dir_path, "../../test_
 
 class indicatorHelperClass(utHelperClass):
 
-    def __init__(self, testName:str, qcId:str, log:logModule=None ):
+    def __init__(self, testName:str, qcId:str, log:logModule=None, hfpfile:str=None, ledConfig:str=None, testMenuConfigFile:str=None, moduleName:str=None, artifactDirPath:str=None  ):
         """
         Initializes the test class
         """
-        self.moduleName = "Indicator"
+        if moduleName is None:
+            self.moduleName = "Indicator"
+        else:
+            self.moduleName = moduleName
+        
         self.profile_moduleName = "indicator"
         super().__init__(testName, qcId, log)
 
@@ -59,17 +63,36 @@ class indicatorHelperClass(utHelperClass):
         # Parse device configuration
         self.deviceTestSetup = self.cpe.get("test")
         self.targetWorkspace = os.path.join(self.cpe.get("target_directory"), self.moduleName)
-        self.moduleHFPFile = os.path.join(dir_path, self.deviceTestSetup.get("profile"))
-        profileOnTarget = os.path.join(self.targetWorkspace, "profiles")
-        profileOnTarget = os.path.join(profileOnTarget, os.path.basename(self.moduleHFPFile))
+
+        profileFileFromConfig = self.deviceTestSetup.get("profile")
+        profileFileTmp = hfpfile or profileFileFromConfig
+        self.moduleHFPFile = os.path.join(dir_path, profileFileTmp)
+
+        if moduleName is None:
+            profileOnTarget = os.path.join(self.targetWorkspace, "profiles")
+            profileOnTarget = os.path.join(profileOnTarget, os.path.basename(self.moduleHFPFile))
+        else:
+            profileOnTarget = os.path.join(self.targetWorkspace, "bin", "profiles")
+            profileOnTarget = os.path.join(profileOnTarget, os.path.basename(profileFileFromConfig))
         profileOnTarget = profileOnTarget.replace("\\", "/")
 
-        self.PlatformLEDConfigFile = os.path.join(dir_path, self.deviceTestSetup.get("platform_led_config"))
-        platformConfigOnTarget = os.path.join(self.targetWorkspace, "test_configuration")
-        platformConfigOnTarget = os.path.join(platformConfigOnTarget, os.path.basename(self.PlatformLEDConfigFile))
+        if ledConfig is not None or ledConfig is None:
+            self.PlatformLEDModuleName = "Indicator"
+
+        platformledConfig = self.deviceTestSetup.get("platform_led_config")
+        platformledClonfigFileTmp = ledConfig or platformledConfig
+        self.PlatformLEDConfigFile = os.path.join(dir_path, platformledClonfigFileTmp)
+
+        if moduleName is None:
+            platformConfigOnTarget = os.path.join(self.targetWorkspace, "test_configuration")
+            self.l3TestConfigFolder = os.path.join(self.targetWorkspace, "test_configuration")
+            platformConfigOnTarget = os.path.join(platformConfigOnTarget, os.path.basename(self.PlatformLEDConfigFile))
+        else:
+            platformConfigOnTarget = os.path.join(self.targetWorkspace, "bin", "test_configuration")
+            platformConfigOnTarget = os.path.join(platformConfigOnTarget, os.path.basename(platformledConfig))
+            self.l3TestConfigFolder = os.path.join(self.targetWorkspace, "bin", "test_configuration")
         platformConfigOnTarget = platformConfigOnTarget.replace("\\", "/")
 
-        self.l3TestConfigFolder = os.path.join(self.targetWorkspace, "test_configuration")
         self.l3TestConfigFolder = self.l3TestConfigFolder.replace("\\", "/")
 
         self.waitTime = self.cpe.get("wait_time")
@@ -77,9 +100,17 @@ class indicatorHelperClass(utHelperClass):
         self.platform = self.cpe.get("platform")
 
         # Load test menu and test case configuration files
-        self.l3TestConfigFile = INDICATOR_L3_TEST_CONFIG_FILE
-        self.testMenuConfiguration = ConfigRead(INDICATOR_TEST_MENU_CONFIGURATION_FILE, self.moduleName)
-        self.testCaseConfiguration = ConfigRead(INDICATOR_TESTCASES_CONFIGURATION_FILE, self.moduleName)
+        self.l3TestConfigFile = INDICATOR_L3_TEST_CONFIG_FILE.replace("\\","/")
+
+        if testMenuConfigFile is not None:
+            indicatorTestMenuConfigFile = testMenuConfigFile
+        else:
+            indicatorTestMenuConfigFile = INDICATOR_TEST_MENU_CONFIGURATION_FILE
+
+        self.testMenuConfiguration = ConfigRead(indicatorTestMenuConfigFile, self.moduleName)
+
+        if moduleName is None:
+            self.testCaseConfiguration = ConfigRead(INDICATOR_TESTCASES_CONFIGURATION_FILE, self.moduleName)
         self.testMenuConfiguration.test.execute = self.testMenuConfiguration.test.execute + f" -p {profileOnTarget}"
 
         # Establish HAL session
@@ -96,7 +127,14 @@ class indicatorHelperClass(utHelperClass):
         # Copy required artifacts to target device
         self.utilities.change_directory(self.hal_session, self.targetWorkspace)
         for artifact in self.testMenuConfiguration.test.artifacts:
-            filesPath = os.path.join(dir_path, artifact)
+            if artifactDirPath is None:
+                filesPath = os.path.join(dir_path, artifact)
+            else:
+                filesPath = os.path.join(artifactDirPath, artifact)
+            self.hal_session.write("ls " + self.targetWorkspace + "/" + os.path.basename(artifact) + "\n")
+            res = self.hal_session.read_until(self.hal_session.prompt, timeout=5)
+            if "No such file or directory" not in res:
+                continue  # File already exists on target, skip copying and continue with next artifact
             self.utilities.sftpCopy(self.hal_session, filesPath, self.targetWorkspace)
 
             if tarfile.is_tarfile(filesPath):
@@ -105,9 +143,14 @@ class indicatorHelperClass(utHelperClass):
                 target_tarfile = target_tarfile.replace("\\", "/")
                 self.utilities.untar(self.hal_session, target_tarfile, self.targetWorkspace)
 
-        self.utilities.change_directory(self.hal_session_1, self.targetWorkspace)
-        self.hal_session_1.write(f"./{self.cpe.get('indicator_process_name')} &")
-        time.sleep(2)
+        if moduleName is None:
+            self.utilities.change_directory(self.hal_session_1, self.targetWorkspace)
+            self.hal_session_1.write(f"./{self.cpe.get('indicator_process_name')} &")
+            time.sleep(2)
+        else:
+            target_workspace = os.path.join(self.targetWorkspace, "bin")
+            target_workspace = target_workspace.replace("\\", "/")
+            self.targetWorkspace = target_workspace
     
     def indicatorReadYaml(self, yaml_path: str) -> dict:
         """
