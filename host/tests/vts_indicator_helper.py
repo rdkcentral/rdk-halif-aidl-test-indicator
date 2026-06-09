@@ -76,8 +76,7 @@ class indicatorHelperClass(utHelperClass):
             profileOnTarget = os.path.join(profileOnTarget, os.path.basename(profileFileFromConfig))
         profileOnTarget = profileOnTarget.replace("\\", "/")
 
-        if ledConfig is not None or ledConfig is None:
-            self.PlatformLEDModuleName = "Indicator"
+        self.PlatformLEDModuleName = "Indicator"
 
         platformledConfig = self.deviceTestSetup.get("platform_led_config")
         platformledClonfigFileTmp = ledConfig or platformledConfig
@@ -145,8 +144,6 @@ class indicatorHelperClass(utHelperClass):
 
         if moduleName is None:
             self.utilities.change_directory(self.hal_session_1, self.targetWorkspace)
-            self.hal_session_1.write(f"./{self.cpe.get('indicator_process_name')} &")
-            time.sleep(2)
         else:
             target_workspace = os.path.join(self.targetWorkspace, "bin")
             target_workspace = target_workspace.replace("\\", "/")
