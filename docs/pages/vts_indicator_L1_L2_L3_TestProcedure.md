@@ -141,7 +141,7 @@ In this file, update the configuration to define the console sessions for the `D
 |Console Session|Description|
 |---------------|-----------|
 |default|This session is used for basic operations, such as verifying the device status and retrieving the MAC address|
-|ssh_hal_test|Executes the `HAL` binary for the test case|
+|ssh_hal_test_0|Executes the `HAL` binary for the test case|
 |ssh_hal_test_1|Console to control device|
 
 ```yaml
@@ -164,7 +164,7 @@ rackConfig:
                             ip: "" #IP address
                             password: ""
                             prompt: "~#" # Prompt string on console
-                        - ssh_hal_test:
+                        - ssh_hal_test_0:
                             type: "ssh"
                             port: 5522
                             username: ""
