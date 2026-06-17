@@ -62,11 +62,11 @@ class indicatorHelperClass(utHelperClass):
 
         # Parse device configuration
         self.deviceTestSetup = self.cpe.get("test")
-        self.targetWorkspace = os.path.join(self.cpe.get("target_directory"), self.moduleName)
+        self.targetWorkspace = os.path.join(self.cpe.get("target_directory"), self.moduleName).replace("\\", "/")
 
         profileFileFromConfig = self.deviceTestSetup.get("profile")
         profileFileTmp = hfpfile or profileFileFromConfig
-        self.moduleHFPFile = os.path.join(dir_path, profileFileTmp)
+        self.moduleHFPFile = os.path.join(dir_path, profileFileTmp).replace("\\", "/")
 
         if moduleName is None:
             profileOnTarget = os.path.join(self.targetWorkspace, "profiles")
@@ -80,7 +80,7 @@ class indicatorHelperClass(utHelperClass):
 
         platformledConfig = self.deviceTestSetup.get("platform_led_config")
         platformledClonfigFileTmp = ledConfig or platformledConfig
-        self.PlatformLEDConfigFile = os.path.join(dir_path, platformledClonfigFileTmp)
+        self.PlatformLEDConfigFile = os.path.join(dir_path, platformledClonfigFileTmp).replace("\\", "/")
 
         if moduleName is None:
             platformConfigOnTarget = os.path.join(self.targetWorkspace, "test_configuration")
@@ -88,8 +88,8 @@ class indicatorHelperClass(utHelperClass):
             platformConfigOnTarget = os.path.join(platformConfigOnTarget, os.path.basename(self.PlatformLEDConfigFile))
         else:
             platformConfigOnTarget = os.path.join(self.targetWorkspace, "bin", "test_configuration")
-            platformConfigOnTarget = os.path.join(platformConfigOnTarget, os.path.basename(platformledConfig))
-            self.l3TestConfigFolder = os.path.join(self.targetWorkspace, "bin", "test_configuration")
+            platformConfigOnTarget = os.path.join(platformConfigOnTarget, os.path.basename(platformledConfig)).replace("\\", "/")
+            self.l3TestConfigFolder = os.path.join(self.targetWorkspace, "bin", "test_configuration").replace("\\", "/")
         platformConfigOnTarget = platformConfigOnTarget.replace("\\", "/")
 
         self.l3TestConfigFolder = self.l3TestConfigFolder.replace("\\", "/")
@@ -130,6 +130,7 @@ class indicatorHelperClass(utHelperClass):
                 filesPath = os.path.join(dir_path, artifact)
             else:
                 filesPath = os.path.join(artifactDirPath, artifact)
+            filesPath = filesPath.replace("\\", "/")
             self.hal_session.write("ls " + self.targetWorkspace + "/" + os.path.basename(artifact) + "\n")
             res = self.hal_session.read_until(self.hal_session.prompt, timeout=5)
             if "No such file or directory" not in res:
@@ -138,8 +139,7 @@ class indicatorHelperClass(utHelperClass):
 
             if tarfile.is_tarfile(filesPath):
                 self.utilities.change_directory(self.hal_session, self.targetWorkspace)
-                target_tarfile = os.path.join(self.targetWorkspace, os.path.basename(artifact))
-                target_tarfile = target_tarfile.replace("\\", "/")
+                target_tarfile = os.path.join(self.targetWorkspace, os.path.basename(artifact)).replace("\\", "/")
                 self.utilities.untar(self.hal_session, target_tarfile, self.targetWorkspace)
 
         if moduleName is None:
