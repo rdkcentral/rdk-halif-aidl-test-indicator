@@ -123,7 +123,7 @@ cd /tmp/Indicator
 Run the following command to execute the VTS test:
 
 ```bash
-./run.sh -p profiles/hfp-indicator_vcomponent.yaml
+./run.sh -p profiles/hfp-indicator-vcomponent.yaml
 ```
 
 ## Run Tests in Python Environment
@@ -141,7 +141,7 @@ In this file, update the configuration to define the console sessions for the `D
 |Console Session|Description|
 |---------------|-----------|
 |default|This session is used for basic operations, such as verifying the device status and retrieving the MAC address|
-|ssh_hal_test|Executes the `HAL` binary for the test case|
+|ssh_hal_test_0|Executes the `HAL` binary for the test case|
 |ssh_hal_test_1|Console to control device|
 
 ```yaml
@@ -164,7 +164,7 @@ rackConfig:
                             ip: "" #IP address
                             password: ""
                             prompt: "~#" # Prompt string on console
-                        - ssh_hal_test:
+                        - ssh_hal_test_0:
                             type: "ssh"
                             port: 5522
                             username: ""
@@ -205,7 +205,7 @@ deviceConfig:
         prompt: "~#" # Prompt string on console
         wait_time: 240 #Configurable timeout value to limit the total duration of individual tests
         test:
-            profile: "../../profiles/hfp-indicator_vcomponent.yaml" #HFP profile used to meet platform requirements
+            profile: "../../profiles/hfp-indicator-vcomponent.yaml" #HFP profile used to meet platform requirements
             platform_led_config: "../../test_configuration/vts_indicator_LED_config_vdevice.yaml"
 ```
 
