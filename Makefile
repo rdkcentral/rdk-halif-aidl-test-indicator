@@ -53,11 +53,13 @@ RDK_HALIF_AIDL_VERSION ?= main
 $(info RDK_HALIF_AIDL_VERSION: $(RDK_HALIF_AIDL_VERSION))
 
 # Compiler flags with version and debug info
-CXXFLAGS := -std=c++17 -g3 -O0 \
+CXXFLAGS := -std=c++17 -g3 -O0  -Wno-unknown-pragmas -Wno-attributes \
             -DHALIF_TEST_PROJECT_VERSION=\"$(VERSION)\" \
             -DRDK_HALIF_AIDL_VERSION=\"$(RDK_HALIF_AIDL_VERSION)\" \
             -DINDICATOR_VERSION=\"$(INDICATOR_VERSION)\"
 $(info CXXFLAGS: $(CXXFLAGS))
+$(info TARGET: $(TARGET))
+$(info VARIANT: $(VARIANT))
 CXXFLAGS += -DBUILD_TIMESTAMP=\"$(BUILD_TIMESTAMP)\"
 
 # TODO: remove this once the ut-core implements runtime logging configuration
@@ -68,12 +70,18 @@ endif
 SRC_DIRS := $(INDICATOR_TEST_DIR)
 SRC_DIRS += $(ROOT_DIR)/test
 
-INC_DIRS := $(ROOT_DIR)/build/current/h/
-INC_DIRS += $(ROOT_DIR)/build/usr/include
+INC_DIRS := $(ROOT_DIR)/build/usr/include
 INC_DIRS += $(SRC_DIRS)
 
 XLDFLAGS := -L$(ROOT_DIR)/build/usr/lib
 XLDFLAGS += -Wl,-rpath-link=$(ROOT_DIR)/build/usr/lib -Wl,--export-dynamic -Wl,-rpath,.
+ifeq ($(TARGET),arm)
+# ARM openssl is built by ut-core; add its lib dir before -lssl/-lcrypto so the
+# linker can resolve them (ut-control appends static paths, but they come after
+# the inherited -lssl/-lcrypto flags which would otherwise fail to resolve).
+XLDFLAGS += -L$(ROOT_DIR)/ut-core/framework/ut-control/build/$(TARGET)/openssl/lib
+XLDFLAGS += -Wl,-rpath-link=$(ROOT_DIR)/ut-core/framework/ut-control/build/$(TARGET)/openssl/lib
+endif
 XLDFLAGS += -lssl -lcrypto -lbinder -lutils
 XLDFLAGS += -laidl_client
 
@@ -86,6 +94,7 @@ ifeq ($(DISABLE_UT_INFO_LOGGING),1)
 CXXFLAGS += -DDISABLE_UT_INFO_LOGGING
 endif
 
+$(info SRC_DIRS: $(SRC_DIRS))
 UT_CORE_DIR := $(CURDIR)/ut-core
 
 export BIN_DIR
@@ -106,3 +115,5 @@ $(TARGET_EXEC):
 
 clean:
 	make -C $(UT_CORE_DIR) -j TARGET=$(TARGET) VARIANT=$(VARIANT) clean
+	rm -rf $(INDICATOR_TEST_DIR)/*.o
+	rm -rf $(ROOT_DIR)/test/*.o
