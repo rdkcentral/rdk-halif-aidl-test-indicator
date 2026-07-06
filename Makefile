@@ -53,13 +53,11 @@ RDK_HALIF_AIDL_VERSION ?= main
 $(info RDK_HALIF_AIDL_VERSION: $(RDK_HALIF_AIDL_VERSION))
 
 # Compiler flags with version and debug info
-CXXFLAGS := -std=c++17 -g3 -O0  -Wno-unknown-pragmas -Wno-attributes \
+CXXFLAGS := -std=c++17 -g3 -O0 \
             -DHALIF_TEST_PROJECT_VERSION=\"$(VERSION)\" \
             -DRDK_HALIF_AIDL_VERSION=\"$(RDK_HALIF_AIDL_VERSION)\" \
             -DINDICATOR_VERSION=\"$(INDICATOR_VERSION)\"
 $(info CXXFLAGS: $(CXXFLAGS))
-$(info TARGET: $(TARGET))
-$(info VARIANT: $(VARIANT))
 CXXFLAGS += -DBUILD_TIMESTAMP=\"$(BUILD_TIMESTAMP)\"
 
 # TODO: remove this once the ut-core implements runtime logging configuration
@@ -70,20 +68,25 @@ endif
 SRC_DIRS := $(INDICATOR_TEST_DIR)
 SRC_DIRS += $(ROOT_DIR)/test
 
-INC_DIRS := $(ROOT_DIR)/build/usr/include
+HALIF_OUT_DIR        := $(ROOT_DIR)/rdk-halif-aidl/out
+HALIF_LIB_DIR        := $(HALIF_OUT_DIR)/target/lib/halif
+-include $(HALIF_OUT_DIR)/halif_generated.mk
+
+INC_DIRS := $(HALIF_INC_DIRS)
+INC_DIRS += $(ROOT_DIR)/build/usr/include
 INC_DIRS += $(SRC_DIRS)
 
 XLDFLAGS := -L$(ROOT_DIR)/build/usr/lib
 XLDFLAGS += -Wl,-rpath-link=$(ROOT_DIR)/build/usr/lib -Wl,--export-dynamic -Wl,-rpath,.
-ifeq ($(TARGET),arm)
+XLDFLAGS += -L$(HALIF_LIB_DIR)
+XLDFLAGS += -Wl,-rpath-link=$(HALIF_LIB_DIR)
+XLDFLAGS += $(HALIF_MODULE_LIBS)
 # ARM openssl is built by ut-core; add its lib dir before -lssl/-lcrypto so the
-# linker can resolve them (ut-control appends static paths, but they come after
+# linker resolves them against the ARM-built libs (not the host sysroot, which lacks
 # the inherited -lssl/-lcrypto flags which would otherwise fail to resolve).
 XLDFLAGS += -L$(ROOT_DIR)/ut-core/framework/ut-control/build/$(TARGET)/openssl/lib
 XLDFLAGS += -Wl,-rpath-link=$(ROOT_DIR)/ut-core/framework/ut-control/build/$(TARGET)/openssl/lib
-endif
 XLDFLAGS += -lssl -lcrypto -lbinder -lutils
-XLDFLAGS += -laidl_client
 
 # required for std::optional
 CXXFLAGS += -std=c++17
@@ -94,7 +97,6 @@ ifeq ($(DISABLE_UT_INFO_LOGGING),1)
 CXXFLAGS += -DDISABLE_UT_INFO_LOGGING
 endif
 
-$(info SRC_DIRS: $(SRC_DIRS))
 UT_CORE_DIR := $(CURDIR)/ut-core
 
 export BIN_DIR
