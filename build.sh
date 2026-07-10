@@ -38,7 +38,6 @@ declare -A HALIF_COMPONENTS=(
 declare -r UT_CORE_DIR="${TOP}/ut-core"
 declare -r TOP_BUILD_DIR="${TOP}/build"
 declare -r BUILD_INSTALL_PREFIX=${TOP_BUILD_DIR}/usr
-declare -r AIDL_LIB_DIR=${TOP}/aidl_lib
 declare -r RDK_HAL_DIR=${TOP}/rdk-halif-aidl
 declare -r PROFILES_DIR=${TOP}/profiles
 
@@ -643,7 +642,6 @@ clean_test()
     echo -e "${BOLD}removing *.o${RESET}"
 
     make clean
-    make -C ${AIDL_LIB_DIR} clean
 
     rm -rf ${TOP_BUILD_DIR}/bin/${OUT_TAR_FILE}
 }
