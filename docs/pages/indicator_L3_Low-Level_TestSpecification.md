@@ -33,7 +33,7 @@ All tests are executed using automated VTS and RAFT frameworks.
 ### References
 
 - `High Level Test Specification` - [indicator_High-Level_TestSpecification.md](indicator_High-Level_TestSpecification.md)
-- [INDICATOR AIDL interface](https://github.com/rdkcentral/rdk-halif-aidl/tree/0.15.0/indicator/)
+- [INDICATOR AIDL interface](https://github.com/rdkcentral/rdk-halif-aidl/tree/0.21.0/indicator/)
 
 ## Level 3 Test Specification
 
@@ -152,6 +152,8 @@ flowchart TD
 ##### Configuration File (YAML)
 
 `StressTest` uses the following test configuration file to set states:
+
+**NOTE**: Update the `repeat` value to specify how many times the test should be executed.
 
 ```yaml
 Indicator:
