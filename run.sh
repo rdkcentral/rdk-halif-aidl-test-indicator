@@ -21,6 +21,8 @@
 
 RUN_DIR=$(realpath "$(dirname "$0")")
 
+export LD_LIBRARY_PATH=${RUN_DIR}:${LD_LIBRARY_PATH}
+
 prompt_string()
 {
     local prompt=$1
