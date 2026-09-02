@@ -102,7 +102,7 @@ cd /tmp/Indicator
 Run the following command to execute the VTS test:
 
 ```bash
-./run.sh -p profiles/hfp-indicator-vcomponent.yaml
+./run.sh -p profiles/hfp-indicator.yaml
 ```
 
 ## Run Tests in Python Environment
@@ -184,7 +184,7 @@ deviceConfig:
         prompt: "~#" # Prompt string on console
         wait_time: 240 #Configurable timeout value to limit the total duration of individual tests
         test:
-            profile: "../../profiles/hfp-indicator-vcomponent.yaml" #HFP profile used to meet platform requirements
+            profile: "../../profiles/hfp-indicator.yaml" #HFP profile used to meet platform requirements
             platform_led_config: "../../test_configuration/vts_indicator_LED_config_vdevice.yaml"
 ```
 
