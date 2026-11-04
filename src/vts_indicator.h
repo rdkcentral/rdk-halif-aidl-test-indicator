@@ -73,11 +73,9 @@
  #include <com/rdk/hal/indicator/BpIndicator.h>
  #include <com/rdk/hal/indicator/BpIndicatorManager.h>
  #include <com/rdk/hal/indicator/Capabilities.h>
- #include <utils/String16.h>
  #include "vts_indicator_helper_functions.h"
  
  using android::sp;
- using android::String8;
  using com::rdk::hal::indicator::IIndicator;
  using com::rdk::hal::indicator::IIndicatorManager;
  using com::rdk::hal::indicator::Capabilities;
@@ -137,7 +135,7 @@
     do { \
         bool success = false; \
         ::android::binder::Status status; \
-        UT_LOG_DEBUG("Setting state='%s'", android::String8(stateStr).string()); \
+        UT_LOG_DEBUG("Setting state='%s'", (stateStr).c_str()); \
         status = indicatorObj->set(stateStr, &success); \
         UT_ASSERT_TRUE(status.isOk()); \
         UT_ASSERT_EQUAL(status.exceptionCode(), ::android::binder::Status::EX_NONE); \
@@ -151,7 +149,7 @@
         UT_ASSERT_TRUE(status.isOk()); \
         UT_ASSERT_EQUAL(status.exceptionCode(), ::android::binder::Status::EX_NONE); \
         UT_ASSERT_TRUE(stateStr.size() > 0); \
-        UT_LOG_DEBUG("Current state='%s'", android::String8(stateStr).string()); \
+        UT_LOG_DEBUG("Current state='%s'", (stateStr).c_str()); \
     } while (0)
 
 
@@ -163,7 +161,7 @@
         UT_ASSERT_TRUE(status.isOk()); \
         UT_ASSERT_EQUAL(status.exceptionCode(), ::android::binder::Status::EX_NONE); \
         UT_ASSERT_FALSE(success); \
-        UT_LOG_INFO("NEG: set() failed as expected for state '%s'", android::String8(stateStr).string()); \
+        UT_LOG_INFO("NEG: set() failed as expected for state '%s'", (stateStr).c_str()); \
     } while (0)
 
  /**
