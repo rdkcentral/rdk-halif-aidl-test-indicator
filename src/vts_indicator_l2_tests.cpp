@@ -123,11 +123,11 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetGeneralStates)
     std::vector<com::rdk::hal::indicator::IIndicator::Id> ids;
     INDICATOR_GET_INDICATORIDS(gINDICATORHandle, ids);
 
-    std::vector<android::String16> generalStates = {
-        android::String16("ACTIVE"),
-        android::String16("STANDBY"),
-        android::String16("OFF"),
-        android::String16("DEEP_SLEEP")
+    std::vector<std::string> generalStates = {
+        "ACTIVE",
+        "STANDBY",
+        "OFF",
+        "DEEP_SLEEP"
     };
 
     for (const auto& id : ids)
@@ -142,7 +142,7 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetGeneralStates)
         {
             if (std::find(caps.supportedStates.begin(), caps.supportedStates.end(), state) == caps.supportedStates.end())
             {
-                UT_LOG_INFO("%s state not supported for ID=%d", android::String8(state).string(), id.value);
+                UT_LOG_INFO("%s state not supported for ID=%d", state.c_str(), id.value);
                 continue;
             }
 
@@ -150,7 +150,7 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetGeneralStates)
             INDICATOR_SET_STATE_POS(indicator, state);
 
             // Get state POS
-            android::String16 getState;
+            std::string getState;
             INDICATOR_GET_STATE_POS(indicator, getState);
 
             UT_ASSERT_EQUAL(getState, state);
@@ -192,11 +192,11 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetWpsStates)
     std::vector<com::rdk::hal::indicator::IIndicator::Id> ids;
     INDICATOR_GET_INDICATORIDS(gINDICATORHandle, ids);
 
-    std::vector<android::String16> wpsStates = {
-        android::String16("WPS_CONNECTING"),
-        android::String16("WPS_CONNECTED"),
-        android::String16("WPS_ERROR"),
-        android::String16("WPS_SES_OVERLAP")
+    std::vector<std::string> wpsStates = {
+        "WPS_CONNECTING",
+        "WPS_CONNECTED",
+        "WPS_ERROR",
+        "WPS_SES_OVERLAP"
     };
 
     for (const auto& id : ids)
@@ -211,13 +211,13 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetWpsStates)
         {
             if (std::find(caps.supportedStates.begin(), caps.supportedStates.end(), state) == caps.supportedStates.end())
             {
-                UT_LOG_INFO("%s state not supported for ID=%d", android::String8(state).string(), id.value);
+                UT_LOG_INFO("%s state not supported for ID=%d", state.c_str(), id.value);
                 continue;
             }
 
             INDICATOR_SET_STATE_POS(indicator, state);
 
-            android::String16 getState;
+            std::string getState;
             INDICATOR_GET_STATE_POS(indicator, getState);
 
             UT_ASSERT_EQUAL(getState, state);
@@ -259,10 +259,10 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetNetworkStates)
     std::vector<com::rdk::hal::indicator::IIndicator::Id> ids;
     INDICATOR_GET_INDICATORIDS(gINDICATORHandle, ids);
 
-    std::vector<android::String16> networkStates = {
-        android::String16("WIFI_ERROR"),
-        android::String16("IP_ACQUIRED"),
-        android::String16("NO_IP")
+    std::vector<std::string> networkStates = {
+        "WIFI_ERROR",
+        "IP_ACQUIRED",
+        "NO_IP"
     };
 
     for (const auto& id : ids)
@@ -277,13 +277,13 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetNetworkStates)
         {
             if (std::find(caps.supportedStates.begin(), caps.supportedStates.end(), state) == caps.supportedStates.end())
             {
-                UT_LOG_INFO("%s state not supported for ID=%d", android::String8(state).string(), id.value);
+                UT_LOG_INFO("%s state not supported for ID=%d", state.c_str(), id.value);
                 continue;
             }
 
             INDICATOR_SET_STATE_POS(indicator, state);
 
-            android::String16 getState;
+            std::string getState;
             INDICATOR_GET_STATE_POS(indicator, getState);
 
             UT_ASSERT_EQUAL(getState, state);
@@ -324,11 +324,11 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetMaintenanceStates)
     std::vector<com::rdk::hal::indicator::IIndicator::Id> ids;
     INDICATOR_GET_INDICATORIDS(gINDICATORHandle, ids);
 
-    std::vector<android::String16> maintenanceStates = {
-        android::String16("FULL_SYSTEM_RESET"),
-        android::String16("USB_UPGRADE"),
-        android::String16("SOFTWARE_DOWNLOAD_ERROR"),
-        android::String16("PSU_FAILURE")
+    std::vector<std::string> maintenanceStates = {
+        "FULL_SYSTEM_RESET",
+        "USB_UPGRADE",
+        "SOFTWARE_DOWNLOAD_ERROR",
+        "PSU_FAILURE"
     };
 
     for (const auto& id : ids)
@@ -343,13 +343,13 @@ UT_ADD_TEST(VTS_L2_INDICATOR, test_l2_setgetMaintenanceStates)
         {
             if (std::find(caps.supportedStates.begin(), caps.supportedStates.end(), state) == caps.supportedStates.end())
             {
-                UT_LOG_INFO("%s state not supported for ID=%d", android::String8(state).string(), id.value);
+                UT_LOG_INFO("%s state not supported for ID=%d", state.c_str(), id.value);
                 continue;
             }
 
             INDICATOR_SET_STATE_POS(indicator, state);
 
-            android::String16 getState;
+            std::string getState;
             INDICATOR_GET_STATE_POS(indicator, getState);
 
             UT_ASSERT_EQUAL(getState, state);

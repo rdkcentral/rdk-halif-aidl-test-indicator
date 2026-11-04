@@ -308,7 +308,7 @@ UT_ADD_TEST(VTS_L1_INDICATOR, getCapabilities_pos)
             char stateBuf[UT_KVP_MAX_ELEMENT_SIZE] = {0};
             UT_KVP_PROFILE_GET_STRING(key.c_str(), stateBuf);
 
-            android::String16 expectedState(stateBuf);
+            std::string expectedState(stateBuf);
 
             bool found = false;
             for (const auto& state : caps.supportedStates)
@@ -355,7 +355,7 @@ UT_ADD_TEST(VTS_L1_INDICATOR, getCapabilities_pos)
 UT_ADD_TEST(VTS_L1_INDICATOR, getState_pos)
 {
     android::sp<com::rdk::hal::indicator::IIndicatorManager> manager = gINDICATORHandle;
-    android::String16 state;
+    std::string state;
 
     std::vector<com::rdk::hal::indicator::IIndicator::Id> ids;
 
@@ -437,7 +437,7 @@ UT_ADD_TEST(VTS_L1_INDICATOR, setState_pos)
         for (const auto& state : caps.supportedStates)
         {
             INDICATOR_SET_STATE_POS(indicatorObj, state);
-            UT_LOG_INFO("Indicator ID=%d, set state=%s succeeded", id.value, android::String8(state).string());
+            UT_LOG_INFO("Indicator ID=%d, set state=%s succeeded", id.value, state.c_str());
         }
     }
 }
@@ -483,11 +483,11 @@ UT_ADD_TEST(VTS_L1_INDICATOR, setState_neg)
         UT_ASSERT_TRUE(indicatorObj != nullptr);
 
         // Validating with an invalid state
-        android::String16 invalidState("INVALID_STATE");
+        std::string invalidState("INVALID_STATE");
         INDICATOR_SET_STATE_NEG(indicatorObj, invalidState);
 
         // Validating with empty string
-        android::String16 emptyInvalidState("");
+        std::string emptyInvalidState("");
         INDICATOR_SET_STATE_NEG(indicatorObj, emptyInvalidState);
     }
 }
