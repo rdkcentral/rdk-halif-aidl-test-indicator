@@ -95,7 +95,7 @@ static void vcomponentkvp_destroy_instance(void *instance)
 }
 
 UT_status_t vts_indicator_parse_SetStates_config(char *configurationFile, const char *module, const char *testGroup,
-    const char *testName, std::vector<android::String16> &indicator_states, uint32_t* repeat, uint32_t* delay)
+    const char *testName, std::vector<std::string> &indicator_states, uint32_t* repeat, uint32_t* delay)
 {
     int32_t statesSize = 0;
 
