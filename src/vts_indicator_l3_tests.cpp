@@ -106,7 +106,7 @@ UT_ADD_TEST(VTS_L3_INDICATOR, SetStates)
 {
     const char *testName = "SetStates";
 
-    std::vector<android::String16> indicator_states;
+    std::vector<std::string> indicator_states;
     uint32_t repeat = 0;
     uint32_t delay = 0;
 
@@ -162,7 +162,7 @@ UT_ADD_TEST(VTS_L3_INDICATOR, SetStates)
                 this_thread::sleep_for(chrono::milliseconds(delay));
 
                 // STEP 5: GET verify
-                android::String16 getState;
+                std::string getState;
                 INDICATOR_GET_STATE_POS(indicatorObj, getState);
 
                 UT_ASSERT_EQUAL(getState, state);
